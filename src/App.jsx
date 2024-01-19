@@ -6,7 +6,7 @@ import Help from "./pages/Help.jsx";
 
 const App = () => (
     <div>
-        <BrowserRouter>
+        <BrowserRouter basename="/modernChess">
             <Routes>
                 <Route path="/" element={<Main />} />
                 <Route path="/play" element={<GamePlay />} />
