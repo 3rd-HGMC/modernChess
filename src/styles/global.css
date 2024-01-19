@@ -1,0 +1,29 @@
+@font-face {
+    font-family: "DOSMyungjo";
+    src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/DOSMyungjo.woff")
+        format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+html {
+    scrollbar-width: thin;
+    overflow-x: hidden;
+}
+
+body {
+    background-color: #783900;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #2a2626;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: #858585;
+}

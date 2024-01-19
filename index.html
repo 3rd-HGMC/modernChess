@@ -19,6 +19,13 @@
         </noscript>
 
         <div id="root"></div>
+        <script>
+            if (window.innerWidth < 1080) {
+                alert(
+                    "1080px보다 화면이 작은 환경(탭, 휴대전화 등)에서는 정상적인 게임플레이가 어려울 수도 있습니다"
+                );
+            }
+        </script>
         <script type="module" src="/src/main.jsx"></script>
     </body>
 </html>
