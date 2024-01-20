@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+}
+
+.menu {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 50px;
+}
+
+.icon {
+    background-color: transparent;
+    width: 200px;
+    height: 200px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+.btn {
+    background-color: transparent;
+    border: 0;
+}
+
+.btn:hover {
+    transform: scale(1.03);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn img {
+    height: 60px;
+}
+
+.playBtn {
+    margin-right: 10px;
+}

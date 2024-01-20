@@ -12,7 +12,9 @@ html {
 }
 
 body {
-    background-color: #783900;
+    background-color: #9c4b00;
+    font-family: "DOSMyungjo";
+    margin: 0;
 }
 
 ::-webkit-scrollbar {
