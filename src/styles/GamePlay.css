@@ -1,0 +1,55 @@
+.grid {
+    display: grid;
+    grid-template-columns: 60vw 40vw;
+    height: 100vh;
+}
+
+.panel {
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.boardContainer {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+}
+
+.board {
+    border-spacing: 0px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.boardBlank {
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+@media (min-width: 1080px) {
+    .boardBlank {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .boardBlank {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+@media (min-width: 1920px) {
+    .boardBlank {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media (min-width: 2560px) {
+    .boardBlank {
+        width: 100px;
+        height: 100px;
+    }
+}
