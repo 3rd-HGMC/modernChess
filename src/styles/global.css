@@ -29,3 +29,16 @@ body {
     border-radius: 5px;
     background: #858585;
 }
+
+.btn {
+    background-color: transparent;
+    border: 0;
+}
+
+.btn:hover {
+    transform: scale(1.03);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}

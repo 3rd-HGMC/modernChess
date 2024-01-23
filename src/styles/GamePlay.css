@@ -4,11 +4,6 @@
     height: 100vh;
 }
 
-.panel {
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
 .boardContainer {
     display: flex;
     align-items: center;
@@ -26,8 +21,45 @@
     background-size: cover;
 }
 
+.panel {
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.info {
+    margin-top: 5vh;
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    padding-left: 10%;
+    padding-right: 5%;
+    height: 5vh;
+}
+
+.infoDetail {
+    text-align: center;
+    font-weight: bolder;
+}
+
+.gamePlay {
+    height: 75vh;
+}
+
+.select {
+    height: 15vh;
+    text-align: center;
+}
+
 @media (min-width: 1080px) {
     .boardBlank {
+        width: 60px;
+        height: 60px;
+    }
+
+    .info {
+        font-size: 20px;
+    }
+
+    .btn img {
         width: 60px;
         height: 60px;
     }
@@ -38,6 +70,15 @@
         width: 70px;
         height: 70px;
     }
+
+    .info {
+        font-size: 30px;
+    }
+
+    .btn img {
+        width: 70px;
+        height: 70px;
+    }
 }
 
 @media (min-width: 1920px) {
@@ -45,11 +86,29 @@
         width: 80px;
         height: 80px;
     }
+
+    .info {
+        font-size: 40px;
+    }
+
+    .btn img {
+        width: 100px;
+        height: 100px;
+    }
 }
 
 @media (min-width: 2560px) {
     .boardBlank {
         width: 100px;
         height: 100px;
+    }
+
+    .info {
+        font-size: 50px;
+    }
+
+    .btn img {
+        width: 150px;
+        height: 150px;
     }
 }
