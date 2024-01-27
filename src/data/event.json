@@ -1,5 +1,5 @@
-[
-    {
+{
+    "earthquake" : {
         "name" : "지진이 발생했습니다!",
         "options" : [
             {
@@ -32,7 +32,7 @@
         "code" : "earthquake",
         "id" : 0
     },
-    {
+    "subsidy" : {
         "name" : "지원금이 도착했습니다!",
         "options" : [
             {
@@ -64,7 +64,7 @@
         "code" : "subsidy",
         "id" : 1
     },
-    {
+    "buildingSupport" : {
         "name" : "정부가 건설을 지원해줍니다!",
         "options" : [
             {
@@ -100,7 +100,7 @@
         "code" : "buildingSupport",
         "id" : 2
     },
-    {
+    "nothing" : {
         "name" : "아무 일도 일어나지 않았습니다!",
         "options" : [
             {
@@ -119,7 +119,7 @@
         "code" : "nothing",
         "id" : 3
     },
-    {
+    "desertion" : {
         "name" : "탈영 문제가 생기기 시작합니다..",
         "options" : [
             {
@@ -148,17 +148,17 @@
         "code" : "desertion",
         "id" : 4
     },
-    {
+    "education" : {
         "name" : "시민들이 교육에 대한 관심을 가지기 시작합니다!",
         "options" : [
             {
-                "name" : "훌륭하군! 도서관을 지어보자",
+                "name" : "훌륭하군! 학교를 지어보자",
                 "effect" : {
                     "newBuilding" : [
-                        "library"
+                        "school"
                     ]
                 },
-                "description" : "무작위 위치에 도서관을 건설합니다."
+                "description" : "무작위 위치에 학교를 건설합니다."
             },
             {
                 "name" : "교육에 관해 세금을 좀 받자",
@@ -172,17 +172,17 @@
                 "effect" : {
                     "money" : -5,
                     "newBuilding" : [
-                        "library",
-                        "library"
+                        "school",
+                        "school"
                     ]
                 },
-                "description" : "5골드를 소모하여 무작위 위치에 도서관 2개를 건설합니다."
+                "description" : "5골드를 소모하여 무작위 위치에 학교 2개를 건설합니다."
             }
         ],
         "code" : "education",
         "id" : 5
     },
-    {
+    "anxiety" : {
         "name" : "시민들이 불안에 떨고 있습니다!",
         "options" : [
             {
@@ -215,7 +215,7 @@
         "code" : "anxiety",
         "id" : 6
     },
-    {
+    "happy" : {
         "name" : "시민들이 각자의 행복을 찾아갑니다!",
         "options" : [
             {
@@ -247,15 +247,15 @@
         "code" : "happy",
         "id" : 7
     },
-    {
+    "genius" : {
         "name" : "인재들이 도시에 생겨납니다!",
         "options" : [
             {
                 "name" : "돈을 벌어오도록 하자",
                 "effect" : {
-                    "moneyByVariable" : "libraryMoney",
+                    "moneyByVariable" : "schoolMoney",
                     "variable" : {
-                        "libraryMoney" : 1
+                        "schoolMoney" : 1
                     }
                 },
                 "description" : "골드를 얻습니다. 다음 인재 등용시 1골드를 추가로 얻습니다. 이 효과는 중첩됩니다."
@@ -280,7 +280,7 @@
         "code" : "genius",
         "id" : 8
     },
-    {
+    "R&D" : {
         "name" : "연구소에서 R&D 투자를 요구합니다!",
         "options" : [
             {
@@ -319,7 +319,7 @@
         "code" : "R&D",
         "id" : 9
     },
-    {
+    "militaryResearch" : {
         "name" : "연구소에서 군사 연구를 계획하였습니다!",
         "options" : [
             {
@@ -356,4 +356,4 @@
         "code" : "militaryResearch",
         "id" : 10
     }
-]
+}

@@ -1,0 +1,47 @@
+{
+    "infantry" : {
+        "name" : "보병",
+        "power" : 8,
+        "cost" : 9,
+        "speed" : 1,
+        "range" : 0,
+        "rangedAttack" : 0,
+        "code" : "infantry"
+    },
+    "scout" : {
+        "name" : "정찰병",
+        "power" : 3,
+        "cost" : 5,
+        "speed" : 2,
+        "range" : 0,
+        "rangedAttack" : 0,
+        "code" : "scout"
+    },
+    "sniper" : {
+        "name" : "저격수",
+        "power" : 3,
+        "cost" : 10,
+        "speed" : 1,
+        "range" : 2,
+        "rangedAttack" : 3,
+        "code" : "sniper"
+    },
+    "tank" : {
+        "name" : "탱크",
+        "power" : 15,
+        "cost" : 15,
+        "speed" : 1,
+        "range" : 1,
+        "rangedAttack" : 5,
+        "code" : "tank"
+    },
+    "bomber" : {
+        "name" : "폭격기",
+        "power" : 25,
+        "cost" : 20,
+        "speed" : 2,
+        "range" : 0,
+        "rangedAttack" : 0,
+        "code" : "bomber"
+    }
+}
