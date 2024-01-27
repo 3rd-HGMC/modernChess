@@ -44,6 +44,12 @@ import BuildingType2 from "../assets/building_type_2.png";
 import BuildingType3 from "../assets/building_type_3.png";
 import BuildingType4 from "../assets/building_type_4.png";
 
+import BuildingData from "../data/building.json";
+import EnemyTimingData from "../data/enemyTiming.json";
+import StartEventData from "../data/startEvent.json";
+import EventData from "../data/event.json";
+import UnitData from "../data/unit.json";
+
 const GamePlay = () => {
     const [board, setBoard] = useState(Array.from({ length: 80 }, () => 0));
 
