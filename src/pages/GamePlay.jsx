@@ -10,7 +10,7 @@ import Blue from "../assets/blue.png";
 import EventOption from "../assets/eventoption.png";
 
 import Panel from "../assets/panel.png";
-import UnitDescription from "../assets/description.png";
+import Description from "../assets/description.png";
 
 import NoIcon from "../assets/btn_no.png";
 import OkIcon from "../assets/btn_ok.png";
@@ -31,6 +31,19 @@ import BlueScout from "../assets/unitImages/blue/scout.png";
 import BlueSniper from "../assets/unitImages/blue/sniper.png";
 import BlueTank from "../assets/unitImages/blue/tank.png";
 
+import BuildingBank from "../assets/buildingImages/bank.png";
+import BuildingBarrack from "../assets/buildingImages/barrack.png";
+import BuildingFactory from "../assets/buildingImages/factory.png";
+import BuildingLab from "../assets/buildingImages/lab.png";
+import BuildingMunitionsFactory from "../assets/buildingImages/munitionsFactory.png";
+import BuildingSchool from "../assets/buildingImages/school.png";
+import BuildingTrainStation from "../assets/buildingImages/trainStation.png";
+
+import BuildingType1 from "../assets/building_type_1.png";
+import BuildingType2 from "../assets/building_type_2.png";
+import BuildingType3 from "../assets/building_type_3.png";
+import BuildingType4 from "../assets/building_type_4.png";
+
 const GamePlay = () => {
     const [board, setBoard] = useState(Array.from({ length: 80 }, () => 0));
 
@@ -41,8 +54,10 @@ const GamePlay = () => {
     const [type, setType] = useState(0); // 0: event 1: units 2: buildings
 
     const [events, setEvents] = useState([0, 1, 2]);
+    const [buildings, setBuildings] = useState([1, 2, 3, 4]);
 
     const [selectedUnit, setSelectedUnit] = useState(0); // 0: none 1: bomber 2: infantry 3: scout 4: sniper 5: tank
+    const [selectedBuilding, setSelectedBuilding] = useState(0); // 0: none 나머지는 순서대로
 
     return (
         <div className="grid">
@@ -139,7 +154,7 @@ const GamePlay = () => {
                             <div
                                 className="unitDetailContainer"
                                 style={{
-                                    backgroundImage: `url(${UnitDescription})`,
+                                    backgroundImage: `url(${Description})`,
                                 }}
                             >
                                 {selectedUnit !== 0 ? (
@@ -182,7 +197,91 @@ const GamePlay = () => {
                             </div>
                         </div>
                     ) : (
-                        <h1>2</h1>
+                        <div className="buildings">
+                            <div className="buildingButtons">
+                                {buildings.map((building) => (
+                                    <button
+                                        key={`building${building}`}
+                                        type="button"
+                                        className="btn smallBtn buildingBtn"
+                                        onClick={() =>
+                                            setSelectedBuilding(building)
+                                        }
+                                        style={{
+                                            backgroundImage: `url(${BuildingType1})`,
+                                        }}
+                                    >
+                                        <img src={BuildingBank} />
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="buildBoardContainer">
+                                <table className="buildingBoard board">
+                                    <tbody>
+                                        {range(2).map((x) => (
+                                            <tr
+                                                key={`boardline${x}`}
+                                                className="boardLine"
+                                            >
+                                                {range(6).map((y) => (
+                                                    <th
+                                                        key={`board${x}${y}`}
+                                                        className="boardBlank"
+                                                        style={{
+                                                            backgroundImage: `url(${Black})`,
+                                                        }}
+                                                    ></th>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div
+                                className="buildingDetailContainer"
+                                style={{
+                                    backgroundImage: `url(${Description})`,
+                                }}
+                            >
+                                {selectedBuilding !== 0 ? (
+                                    <div>
+                                        <div className="description">
+                                            <h2>
+                                                무민 : 멋진 기획과 아이콘을
+                                                만듭니다
+                                                <br />
+                                                공격력: 100
+                                                <br /> 방어력: 100
+                                                <br />
+                                                하지만 키키를 만나면 약해집니다
+                                            </h2>
+                                        </div>
+                                        <div className="buyOption">
+                                            <button
+                                                type="button"
+                                                className="btn smallBtn okBtn"
+                                                onClick={() => {
+                                                    setSelectedBuilding(0);
+                                                }}
+                                            >
+                                                <img src={OkIcon} />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn smallBtn okBtn"
+                                                onClick={() =>
+                                                    setSelectedBuilding(0)
+                                                }
+                                            >
+                                                <img src={NoIcon} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div></div>
+                                )}
+                            </div>
+                        </div>
                     )}
                 </div>
                 <div className="select">

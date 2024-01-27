@@ -99,6 +99,51 @@
     justify-content: center;
 }
 
+.buildings {
+    width: 40vw;
+}
+
+.buildingButtons {
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.buildingBtn {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: transparent;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.buildBoardContainer {
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.buildingDetailContainer {
+    width: 27vw;
+    height: 15vw;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: transparent;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.buildingDetailContainer .description {
+    height: 8vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+}
+
 .smallBtn img {
     width: 5vw;
     height: 5vw;
@@ -119,7 +164,7 @@
         font-size: 20px;
     }
 
-    .unitDetailContainer .description {
+    .description {
         font-size: 10px;
     }
 
@@ -139,7 +184,7 @@
         font-size: 30px;
     }
 
-    .unitDetailContainer .description {
+    .description {
         font-size: 12px;
     }
 
@@ -151,15 +196,15 @@
 
 @media (min-width: 1920px) {
     .boardBlank {
-        width: 80px;
-        height: 80px;
+        width: 100px;
+        height: 100px;
     }
 
     .detail {
         font-size: 40px;
     }
 
-    .unitDetailContainer .description {
+    .description {
         font-size: 18px;
     }
 
@@ -171,15 +216,15 @@
 
 @media (min-width: 2560px) {
     .boardBlank {
-        width: 100px;
-        height: 100px;
+        width: 120px;
+        height: 120px;
     }
 
     .detail {
         font-size: 50px;
     }
 
-    .unitDetailContainer .description {
+    .description {
         font-size: 22px;
     }
 
