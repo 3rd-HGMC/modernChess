@@ -62,6 +62,48 @@
     margin-top: 10px;
 }
 
+.units {
+    width: 40vw;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    padding-left: 5vw;
+    padding-right: 5vw;
+}
+
+.unitDetailContainer {
+    width: 27vw;
+    height: 15vw;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: transparent;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 5vh;
+}
+
+.unitDetailContainer .description {
+    height: 8vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+}
+
+.buyOption {
+    height: 7vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.smallBtn img {
+    width: 5vw;
+    height: 5vw;
+}
+
 .select {
     height: 15vh;
     text-align: center;
@@ -77,9 +119,13 @@
         font-size: 20px;
     }
 
-    .btn img {
-        width: 60px;
-        height: 60px;
+    .unitDetailContainer .description {
+        font-size: 10px;
+    }
+
+    .bigBtn img {
+        width: 70px;
+        height: 70px;
     }
 }
 
@@ -93,9 +139,13 @@
         font-size: 30px;
     }
 
-    .btn img {
-        width: 70px;
-        height: 70px;
+    .unitDetailContainer .description {
+        font-size: 12px;
+    }
+
+    .bigBtn img {
+        width: 80px;
+        height: 80px;
     }
 }
 
@@ -109,9 +159,13 @@
         font-size: 40px;
     }
 
-    .btn img {
-        width: 100px;
-        height: 100px;
+    .unitDetailContainer .description {
+        font-size: 18px;
+    }
+
+    .bigBtn img {
+        width: 120px;
+        height: 120px;
     }
 }
 
@@ -125,7 +179,11 @@
         font-size: 50px;
     }
 
-    .btn img {
+    .unitDetailContainer .description {
+        font-size: 22px;
+    }
+
+    .bigBtn img {
         width: 150px;
         height: 150px;
     }
