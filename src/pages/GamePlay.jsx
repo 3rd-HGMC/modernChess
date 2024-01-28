@@ -129,8 +129,7 @@ const GamePlay = () => {
         if (variable.bomberBuff && !currentUnits.includes("bomber"))
             setCurrentUnits([...currentUnits, "bomber"]);
 
-        let addmoney = 0;
-        setMoney(money + 2);
+        let addmoney = moneyByTurn;
 
         Object.keys(BuildingData).forEach((x) => {
             if (BuildingData[x].type === "economy") {

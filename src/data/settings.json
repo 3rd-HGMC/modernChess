@@ -9,7 +9,7 @@
     },
     "moneyByTurn": 2,
     "defaultHP": 15,
-    "defaultMoney": 10,
+    "defaultMoney": 12,
     "defaultUnits": ["infantry", "scout", "sniper"],
     "defaultEvents": [
         "anxiety",
