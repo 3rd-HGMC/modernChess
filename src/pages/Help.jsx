@@ -16,7 +16,7 @@ const Help = () => {
         <div className="helpContainer">
             <div className="interaction">
                 <div className="image">
-                    <img src={`/modernChess/images/${image}.png`} />
+                    <img src={`/modernChess/images/tutorial/${image}.png`} />
                 </div>
                 <div className="bottom">
                     {

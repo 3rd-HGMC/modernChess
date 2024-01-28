@@ -1,4 +1,9 @@
-export const getXY = (i) => [Math.floor(i / 10), i % 10];
-export const fromXY = (x, y) => 10 * x + y;
+import Settings from "./data/settings.json";
+
+export const getXY = (i) => [
+    i % Settings.board.width,
+    Math.floor(i / Settings.board.width),
+];
+export const fromXY = (x, y) => y * Settings.board.width + x;
 
 export const range = (n) => [...Array(n).keys()];

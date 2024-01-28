@@ -85,6 +85,7 @@
 }
 
 .unitDetailContainer .description {
+    white-space: pre-line;
     height: 8vw;
     display: flex;
     align-items: center;

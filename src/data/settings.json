@@ -1,0 +1,8 @@
+{
+    "board": {
+        "width": 8,
+        "height": 10
+    },
+    "defaultHP": 15,
+    "defaultMoney": 10
+}

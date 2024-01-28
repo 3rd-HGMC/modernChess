@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { fromXY, range } from "../utils.js";
 
@@ -18,26 +18,7 @@ import UnitsIcon from "../assets/units.png";
 import EventIcon from "../assets/event.png";
 import BuildingsIcon from "../assets/buildings.png";
 import NextIcon from "../assets/next.png";
-
-import RedBomber from "../assets/unitImages/red/bomber.png";
-import RedInfantry from "../assets/unitImages/red/infantry.png";
-import RedScout from "../assets/unitImages/red/scout.png";
-import RedSniper from "../assets/unitImages/red/sniper.png";
-import RedTank from "../assets/unitImages/red/tank.png";
-
-import BlueBomber from "../assets/unitImages/blue/bomber.png";
-import BlueInfantry from "../assets/unitImages/blue/infantry.png";
-import BlueScout from "../assets/unitImages/blue/scout.png";
-import BlueSniper from "../assets/unitImages/blue/sniper.png";
-import BlueTank from "../assets/unitImages/blue/tank.png";
-
-import BuildingBank from "../assets/buildingImages/bank.png";
-import BuildingBarrack from "../assets/buildingImages/barrack.png";
-import BuildingFactory from "../assets/buildingImages/factory.png";
-import BuildingLab from "../assets/buildingImages/lab.png";
-import BuildingMunitionsFactory from "../assets/buildingImages/munitionsFactory.png";
-import BuildingSchool from "../assets/buildingImages/school.png";
-import BuildingTrainStation from "../assets/buildingImages/trainStation.png";
+import DisabledNextIcon from "../assets/disabled_next.png";
 
 import BuildingType1 from "../assets/building_type_1.png";
 import BuildingType2 from "../assets/building_type_2.png";
@@ -49,41 +30,106 @@ import EnemyTimingData from "../data/enemyTiming.json";
 import StartEventData from "../data/startEvent.json";
 import EventData from "../data/event.json";
 import UnitData from "../data/unit.json";
+import Settings from "../data/settings.json";
+
+const width = Settings.board.width,
+    height = Settings.board.height,
+    defaultHP = Settings.defaultHP,
+    defaultMoney = Settings.defaultMoney;
 
 const GamePlay = () => {
-    const [board, setBoard] = useState(Array.from({ length: 80 }, () => 0));
+    const [board, setBoard] = useState(
+        Array.from({ length: width * height }, () => {
+            return { team: "", type: "", power: 0 };
+        })
+    );
 
-    const [turn, setTurn] = useState(1);
-    const [hp, setHP] = useState(10);
-    const [money, setMoney] = useState(10);
+    const [turn, setTurn] = useState(0);
+    const [hp, setHP] = useState(defaultHP);
+    const [botHP, setBotHP] = useState(defaultHP);
+    const [money, setMoney] = useState(defaultMoney);
 
     const [type, setType] = useState(0); // 0: event 1: units 2: buildings
 
     const [events, setEvents] = useState([0, 1, 2]);
     const [buildings, setBuildings] = useState([1, 2, 3, 4]);
 
-    const [selectedUnit, setSelectedUnit] = useState(0); // 0: none 1: bomber 2: infantry 3: scout 4: sniper 5: tank
+    const [turnStarted, setTurnStarted] = useState(true);
+
+    const [selectedUnit, setSelectedUnit] = useState("none"); // 0: none 1: bomber 2: infantry 3: scout 4: sniper 5: tank
     const [selectedBuilding, setSelectedBuilding] = useState(0); // 0: none 나머지는 순서대로
+
+    const [currentUnits, setCurrentUnits] = useState([
+        "infantry",
+        "scout",
+        "tank",
+    ]);
+
+    const startTurn = () => {
+        setTurnStarted(true);
+        setTurn(turn + 1);
+
+        let newBoard = [...board];
+        let bd, unitInfo;
+
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                bd = board[fromXY(x, y)];
+                if (bd.type === "") continue;
+                if (bd.team === "blue") continue;
+                unitInfo = UnitData[bd.type];
+                for (let i = 1; i <= unitInfo.speed; i++) {
+                    if (y + i == height - 1) {
+                        setBotHP(botHP - bd.power);
+                    }
+                }
+            }
+        }
+    };
+
+    const enemyTurn = () => {
+        if (turnStarted) return;
+        startTurn();
+    };
+
+    useEffect(() => startTurn(), []);
 
     return (
         <div className="grid">
             <div className="boardContainer">
                 <table className="board">
                     <tbody>
-                        {range(10).map((x) => (
-                            <tr key={`boardline${x}`} className="boardLine">
-                                {range(8).map((y) => (
+                        {range(height).map((y) => (
+                            <tr key={`boardline${y}`} className="boardLine">
+                                {range(width).map((x) => (
                                     <th
                                         key={`board${x}${y}`}
                                         className="boardBlank"
                                         style={{
                                             backgroundImage: `url(${
-                                                x === 0
+                                                board[fromXY(x, y)].type !== ""
+                                                    ? `/modernChess/images/units/${
+                                                          board[fromXY(x, y)]
+                                                              .team
+                                                      }/${
+                                                          board[fromXY(x, y)]
+                                                              .type
+                                                      }.png`
+                                                    : y === 0
                                                     ? Blue
-                                                    : x === 9
+                                                    : y === 9
                                                     ? Red
                                                     : Black
                                             })`,
+                                        }}
+                                        onClick={() => {
+                                            const info = board[fromXY(x, y)];
+                                            if (info.type === "") return;
+                                            alert(
+                                                `<${
+                                                    UnitData[info.type].name
+                                                }> 남은 전투력 : ${info.power}`
+                                            );
                                         }}
                                     ></th>
                                 ))}
@@ -121,41 +167,18 @@ const GamePlay = () => {
                     ) : type === 1 ? (
                         <div className="units">
                             <div className="buttons">
-                                <button
-                                    type="button"
-                                    className="btn bigBtn unitBtn"
-                                    onClick={() => setSelectedUnit(1)}
-                                >
-                                    <img src={RedBomber} />
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn bigBtn unitBtn"
-                                    onClick={() => setSelectedUnit(2)}
-                                >
-                                    <img src={RedInfantry} />
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn bigBtn unitBtn"
-                                    onClick={() => setSelectedUnit(3)}
-                                >
-                                    <img src={RedScout} />
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn bigBtn unitBtn"
-                                    onClick={() => setSelectedUnit(4)}
-                                >
-                                    <img src={RedSniper} />
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn bigBtn unitBtn"
-                                    onClick={() => setSelectedUnit(5)}
-                                >
-                                    <img src={RedTank} />
-                                </button>
+                                {currentUnits.map((unit) => (
+                                    <button
+                                        key={`unit${unit}`}
+                                        type="button"
+                                        className="btn bigBtn unitBtn"
+                                        onClick={() => setSelectedUnit(unit)}
+                                    >
+                                        <img
+                                            src={`/modernChess/images/units/red/${unit}.png`}
+                                        />
+                                    </button>
+                                ))}
                             </div>
                             <div
                                 className="unitDetailContainer"
@@ -163,17 +186,27 @@ const GamePlay = () => {
                                     backgroundImage: `url(${Description})`,
                                 }}
                             >
-                                {selectedUnit !== 0 ? (
+                                {selectedUnit !== "none" ? (
                                     <div>
                                         <div className="description">
                                             <h2>
-                                                무민 : 멋진 기획과 아이콘을
-                                                만듭니다
-                                                <br />
-                                                공격력: 100
-                                                <br /> 방어력: 100
-                                                <br />
-                                                하지만 키키를 만나면 약해집니다
+                                                {`<${
+                                                    UnitData[selectedUnit].name
+                                                }> ${
+                                                    UnitData[selectedUnit].cost
+                                                }$ ${
+                                                    UnitData[selectedUnit].range
+                                                        ? `원거리 유닛`
+                                                        : "근거리 유닛"
+                                                }\n전투력 : ${
+                                                    UnitData[selectedUnit].power
+                                                } / 스피드 : ${
+                                                    UnitData[selectedUnit].speed
+                                                }${
+                                                    UnitData[selectedUnit].range
+                                                        ? `\n원거리 전투력 : ${UnitData[selectedUnit].rangedAttack}\n범위 : ${UnitData[selectedUnit].range}`
+                                                        : ""
+                                                }`}
                                             </h2>
                                         </div>
                                         <div className="buyOption">
@@ -181,7 +214,62 @@ const GamePlay = () => {
                                                 type="button"
                                                 className="btn smallBtn okBtn"
                                                 onClick={() => {
-                                                    setSelectedUnit(0);
+                                                    if (
+                                                        money <
+                                                        UnitData[selectedUnit]
+                                                            .cost
+                                                    )
+                                                        alert(
+                                                            "돈이 부족합니다"
+                                                        );
+                                                    else {
+                                                        let selection;
+                                                        do {
+                                                            selection =
+                                                                parseInt(
+                                                                    prompt(
+                                                                        `유닛을 배치할 나의 진영 칸 (1 ~ ${width})을 입력해주세요`
+                                                                    ),
+                                                                    10
+                                                                );
+                                                        } while (
+                                                            isNaN(selection) ||
+                                                            selection > width ||
+                                                            selection < 1 ||
+                                                            board[
+                                                                fromXY(
+                                                                    selection -
+                                                                        1,
+                                                                    9
+                                                                )
+                                                            ].type !== ""
+                                                        );
+
+                                                        setMoney(
+                                                            money -
+                                                                UnitData[
+                                                                    selectedUnit
+                                                                ].cost
+                                                        );
+
+                                                        let boardCopy = [
+                                                            ...board,
+                                                        ];
+                                                        boardCopy[
+                                                            fromXY(
+                                                                selection - 1,
+                                                                9
+                                                            )
+                                                        ] = {
+                                                            team: "red",
+                                                            type: selectedUnit,
+                                                            power: UnitData[
+                                                                selectedUnit
+                                                            ].power,
+                                                        };
+                                                        setBoard(boardCopy);
+                                                    }
+                                                    setSelectedUnit("none");
                                                 }}
                                             >
                                                 <img src={OkIcon} />
@@ -190,7 +278,7 @@ const GamePlay = () => {
                                                 type="button"
                                                 className="btn smallBtn okBtn"
                                                 onClick={() =>
-                                                    setSelectedUnit(0)
+                                                    setSelectedUnit("none")
                                                 }
                                             >
                                                 <img src={NoIcon} />
@@ -214,10 +302,12 @@ const GamePlay = () => {
                                             setSelectedBuilding(building)
                                         }
                                         style={{
-                                            backgroundImage: `url(${BuildingType1})`,
+                                            backgroundImage: BuildingType1,
                                         }}
                                     >
-                                        <img src={BuildingBank} />
+                                        <img
+                                            src={`url(/modernChess/images/buildings/bank.png)`}
+                                        />
                                     </button>
                                 ))}
                             </div>
@@ -312,8 +402,16 @@ const GamePlay = () => {
                     >
                         <img src={BuildingsIcon} />
                     </button>
-                    <button type="button" className="btn bigBtn nextBtn">
-                        <img src={NextIcon} />
+                    <button
+                        type="button"
+                        className="btn bigBtn nextBtn"
+                        onClick={() => {
+                            if (turnStarted)
+                                alert("이벤트를 먼저 선택해주세요!");
+                            enemyTurn();
+                        }}
+                    >
+                        <img src={turnStarted ? DisabledNextIcon : NextIcon} />
                     </button>
                 </div>
             </div>
