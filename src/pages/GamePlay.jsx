@@ -265,7 +265,7 @@ const GamePlay = () => {
                                                     UnitData[selectedUnit].speed
                                                 }${
                                                     UnitData[selectedUnit].range
-                                                        ? `\n원거리 전투력 : ${UnitData[selectedUnit].rangedAttack}\n범위 : ${UnitData[selectedUnit].range}`
+                                                        ? `\n원거리 전투력 : ${UnitData[selectedUnit].rangedAttack}\n사거리 : ${UnitData[selectedUnit].range}`
                                                         : ""
                                                 }`}
                                             </h2>
@@ -410,7 +410,7 @@ const GamePlay = () => {
                                                 공격력: 100
                                                 <br /> 방어력: 100
                                                 <br />
-                                                하지만 키키를 만나면 약해집니다
+                                                키키를 만나면 강해집니다
                                             </h2>
                                         </div>
                                         <div className="buyOption">

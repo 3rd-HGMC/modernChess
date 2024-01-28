@@ -20,7 +20,7 @@
     "sniper": {
         "name": "저격수",
         "power": 3,
-        "cost": 10,
+        "cost": 7,
         "speed": 1,
         "range": 2,
         "rangedAttack": 3,
