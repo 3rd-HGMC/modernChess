@@ -2,70 +2,31 @@
     [],
     [],
     [],
-    [
-        "scout"
-    ],
+    ["scout"],
     [],
-    [
-        "infantry"
-    ],
-    [
-        "infantry"
-    ],
+    ["infantry"],
+    ["infantry"],
     [],
-    [
-        "scout"
-    ],
+    ["scout"],
     [],
-    [
-        "infantry"
-    ],
+    ["infantry"],
     [],
-    [
-        "infantry",
-        "infantry"
-    ],
-    [
-        "sniper"
-    ],
-    [
-        "infantry"
-    ],
-    [
-        "infantry"
-    ],
-    [
-        "sniper"
-    ],
+    ["infantry", "infantry"],
+    ["sniper"],
+    ["infantry"],
+    ["infantry"],
+    ["sniper"],
     [],
     [],
-    [
-        "infantry",
-        "sniper",
-        "scout"
-    ],
+    ["infantry", "sniper", "scout"],
     [],
     [],
-    [
-        "tank"
-    ],
-    [
-        "tank"
-    ],
-    [
-        "tank"
-    ],
-    [
-        "scout"
-    ],
+    ["tank"],
+    ["tank"],
+    ["tank"],
+    ["scout"],
     [],
-    [
-        "tank"
-    ],
-    [
-        "tank"
-    ],
-    [
-        "bomber"
-    ]
+    ["tank"],
+    ["tank"],
+    ["bomber"]
 ]
