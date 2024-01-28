@@ -34,7 +34,7 @@ const width = Settings.board.width,
     defaultEvents = Settings.defaultEvents,
     buildingWidth = Settings.buildingBoard.width,
     buildingHeight = Settings.buildingBoard.height,
-    enemyTiming = Settings.enemyTiming,
+    enemyTiming = Settings.enemyTiming
     moneyByTurn = Settings.moneyByTurn;
 
 const GamePlay = () => {
@@ -130,7 +130,7 @@ const GamePlay = () => {
             setCurrentUnits([...currentUnits, "bomber"]);
 
         let addmoney = 0;
-        money += moneyByTurn;
+        setMoney(money + 2);
 
         Object.keys(BuildingData).forEach((x) => {
             if (BuildingData[x].type === "economy") {
