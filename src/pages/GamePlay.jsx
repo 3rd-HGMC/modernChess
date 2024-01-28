@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { fromXY, getXY, range, randomSelection, shuffle } from "../utils.js";
 
@@ -21,7 +22,6 @@ import NextIcon from "../assets/next.png";
 import DisabledNextIcon from "../assets/disabled_next.png";
 
 import BuildingData from "../data/building.json";
-import EnemyTimingData from "../data/enemyTiming.json";
 import EventData from "../data/event.json";
 import UnitData from "../data/unit.json";
 import Settings from "../data/settings.json";
@@ -33,16 +33,19 @@ const width = Settings.board.width,
     defaultUnits = Settings.defaultUnits,
     defaultEvents = Settings.defaultEvents,
     buildingWidth = Settings.buildingBoard.width,
-    buildingHeight = Settings.buildingBoard.height;
+    buildingHeight = Settings.buildingBoard.height,
+    enemyTiming = Settings.enemyTiming;
 
 const GamePlay = () => {
+    const navigate = useNavigate();
+
     const [board, setBoard] = useState(
         Array.from({ length: width * height }, () => {
             return { team: "", type: "", power: 0 };
         })
     );
 
-    const [turn, setTurn] = useState(0);
+    const [turn, setTurn] = useState(1);
     const [hp, setHP] = useState(defaultHP);
     const [botHP, setBotHP] = useState(defaultHP);
     const [money, setMoney] = useState(defaultMoney);
@@ -82,8 +85,6 @@ const GamePlay = () => {
 
     const [currentUnits, setCurrentUnits] = useState(defaultUnits);
 
-    const [gameResult, setGameResult] = useState(0); // 1: win 0: 진행중 -1: lose
-
     const checkBuilding = (building) => {
         let res = false;
         for (let i = 0; i < buildingWidth * buildingHeight; i++) {
@@ -113,8 +114,8 @@ const GamePlay = () => {
     };
 
     const startTurn = () => {
+        if (turnStarted) return;
         setTurnStarted(true);
-        setTurn(turn + 1);
 
         setSaleBuildings(randomSelection(Object.keys(BuildingData), 4));
 
@@ -138,120 +139,170 @@ const GamePlay = () => {
             }
         });
 
-        let i,
+        let i = 0,
             bd,
             newbd,
             unitInfo,
             living,
-            newBoard = [...board];
+            newBoard = [...board],
+            gameResult = 0;
 
-        for (let y = 0; y < height; y++) {
-            for (let x = 0; x < width; x++) {
-                bd = newBoard[fromXY(x, y)];
-                living = true;
+        const newUnits = enemyTiming[turn % enemyTiming.length];
+        for (let x of randomSelection(range(width), newUnits.length)) {
+            newBoard[fromXY(x, 0)] = {
+                team: "blue",
+                type: newUnits[i],
+                power: UnitData[newUnits[i]].power,
+            };
+            console.log(newBoard[fromXY(x, 0)]);
+            i++;
+        }
 
-                if (bd.type === "") continue;
-                if (bd.team === "blue") continue;
-                unitInfo = UnitData[bd.type];
+        const move = (team, dir) => {
+            for (
+                let y = team === "red" ? 0 : height - 1;
+                team === "red" ? y < height : y >= 0;
+                team === "red" ? y++ : y--
+            ) {
+                for (let x = 0; x < width; x++) {
+                    bd = newBoard[fromXY(x, y)];
+                    living = true;
 
-                let move = true;
+                    if (bd.type === "") continue;
+                    if (bd.team !== team) continue;
+                    unitInfo = UnitData[bd.type];
 
-                if (unitInfo.range > 0) {
-                    for (i = 1; i <= unitInfo.range; i++) {
-                        if (y - i === 0) break;
+                    let moved = true;
 
-                        newbd = newBoard[fromXY(x, y - i)];
-                        if (newbd.type === "") continue;
+                    if (unitInfo.range > 0) {
+                        for (i = 1; i <= unitInfo.range; i++) {
+                            if (y + dir * i === 0) break;
 
-                        if (newbd.power <= unitInfo.rangedAttack) {
-                            newBoard[fromXY(x, y - i)] = {
-                                team: "",
-                                type: "",
-                                power: 0,
-                            };
+                            newbd = newBoard[fromXY(x, y + dir * i)];
+                            if (newbd.type === "") continue;
 
-                            Object.keys(BuildingData).forEach((x) => {
-                                if (BuildingData[x].type === "military") {
-                                    let k = getBuildingPoint(x);
-                                    addmoney +=
-                                        k[0] *
-                                            BuildingData[x].update.killMoney +
-                                        k[1] *
-                                            BuildingData[x].update.buff
-                                                .killMoney;
-                                }
-                            });
-                        } else {
-                            newBoard[fromXY(x, y - i)].power -=
-                                unitInfo.rangedAttack;
-                        }
-                        move = false;
-                        break;
-                    }
-                }
+                            if (newbd.power <= unitInfo.rangedAttack) {
+                                newBoard[fromXY(x, y + dir * i)] = {
+                                    team: "",
+                                    type: "",
+                                    power: 0,
+                                };
 
-                if (move) {
-                    newBoard[fromXY(x, y)] = {
-                        team: "",
-                        type: "",
-                        power: 0,
-                    };
-
-                    for (i = 1; i <= unitInfo.speed; i++) {
-                        if (y - i === 0) {
-                            setBotHP(botHP - bd.power);
-                            if (botHP <= bd.power) setGameResult(1);
-                            living = false;
-                            break;
-                        }
-
-                        newbd = newBoard[fromXY(x, y - i)];
-                        if (newbd.type === "") continue;
-                        else if (newbd.team === "red") {
-                            i--;
-                            break;
-                        } else {
-                            if (newbd.power > bd.power) {
-                                living = false;
-                                newBoard[fromXY(x, y - i)].power -= bd.power;
-                            } else if (newbd.power === bd.power) living = false;
-                            else {
-                                bd.power -= newbd.power;
-                                Object.keys(BuildingData).forEach((x) => {
-                                    if (BuildingData[x].type === "military") {
-                                        let k = getBuildingPoint(x);
-                                        addmoney +=
-                                            k[0] *
-                                                BuildingData[x].update
-                                                    .killMoney +
-                                            k[1] *
-                                                BuildingData[x].update.buff
-                                                    .killMoney;
+                                if (team === "red") {
+                                    for (let x of Object.keys(BuildingData)) {
+                                        if (
+                                            BuildingData[x].type === "military"
+                                        ) {
+                                            let k = getBuildingPoint(x);
+                                            addmoney +=
+                                                k[0] *
+                                                    BuildingData[x].update
+                                                        .killMoney +
+                                                k[1] *
+                                                    BuildingData[x].update.buff
+                                                        .killMoney;
+                                        }
                                     }
-                                });
+                                }
+                            } else {
+                                newBoard[fromXY(x, y + dir * i)].power -=
+                                    unitInfo.rangedAttack;
                             }
+                            moved = false;
                             break;
                         }
                     }
-                }
 
-                if (living) {
-                    i = Math.min(unitInfo.speed, i);
-                    newBoard[fromXY(x, y - i)] = bd;
+                    if (moved) {
+                        newBoard[fromXY(x, y)] = {
+                            team: "",
+                            type: "",
+                            power: 0,
+                        };
+
+                        for (i = 1; i <= unitInfo.speed; i++) {
+                            if (team === "red") {
+                                if (y + dir * i === 0) {
+                                    if (botHP <= bd.power) gameResult = 1;
+                                    setBotHP(botHP - bd.power);
+                                    living = false;
+                                    break;
+                                }
+                            } else {
+                                if (y + dir * i === height - 1) {
+                                    if (hp <= bd.power) gameResult = -1;
+                                    setHP(hp - bd.power);
+                                    living = false;
+                                    break;
+                                }
+                            }
+
+                            newbd = newBoard[fromXY(x, y + dir * i)];
+                            if (newbd.type === "") continue;
+                            else if (newbd.team === team) {
+                                i--;
+                                break;
+                            } else {
+                                if (newbd.power > bd.power) {
+                                    living = false;
+                                    newBoard[fromXY(x, y + dir * i)].power -=
+                                        bd.power;
+                                } else if (newbd.power === bd.power)
+                                    living = false;
+                                else {
+                                    bd.power -= newbd.power;
+                                    if (team === "red") {
+                                        for (let x of Object.keys(
+                                            BuildingData
+                                        )) {
+                                            if (
+                                                BuildingData[x].type ===
+                                                "military"
+                                            ) {
+                                                let k = getBuildingPoint(x);
+                                                addmoney +=
+                                                    k[0] *
+                                                        BuildingData[x].update
+                                                            .killMoney +
+                                                    k[1] *
+                                                        BuildingData[x].update
+                                                            .buff.killMoney;
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    if (living) {
+                        i = Math.min(unitInfo.speed, i);
+                        newBoard[fromXY(x, y + dir * i)] = bd;
+                    }
                 }
             }
-        }
+        };
+
+        move("red", -1);
+        move("blue", 1);
+        console.log(
+            newBoard[fromXY(0, 0)],
+            newBoard[fromXY(1, 0)],
+            newBoard[fromXY(2, 0)],
+            newBoard[fromXY(3, 0)],
+            newBoard[fromXY(4, 0)],
+            newBoard
+        );
 
         setBoard(newBoard);
         setMoney(money + addmoney);
+        setTurn(turn + 1);
 
-        if (gameResult === 1) alert("승리했습니다");
-    };
-
-    const enemyTurn = () => {
-        if (turnStarted) return;
-        if (gameResult === -1) alert("패배했습니다");
-        startTurn();
+        if (gameResult !== 0) {
+            alert(gameResult === 1 ? "승리했습니다" : "패배했습니다");
+            navigate("../");
+        }
     };
 
     const doEvent = (option) => {
@@ -304,7 +355,8 @@ const GamePlay = () => {
             let unitList = [];
 
             for (let i = 0; i < width * height; i++) {
-                if (board[i].type !== "") unitList.push(i);
+                if (board[i].type !== "" && board[i].team === "red")
+                    unitList.push(i);
             }
 
             randomSelection(unitList, option.deleteSoldier).forEach((x) => {
@@ -369,7 +421,6 @@ const GamePlay = () => {
     }, []);
 
     useEffect(() => {
-        console.log(eventDeck);
         // Test
     });
 
@@ -420,7 +471,9 @@ const GamePlay = () => {
             <div className="panel" style={{ backgroundImage: `url(${Panel})` }}>
                 <div className="info">
                     <div className="infoDetail detail">턴 : {turn}</div>
-                    <div className="infoDetail detail">체력 : {hp}</div>
+                    <div className="infoDetail detail">
+                        {hp} | {botHP}
+                    </div>
                     <div className="infoDetail detail">돈 : {money}</div>
                 </div>
                 <div className="gamePlay">
@@ -1092,7 +1145,7 @@ const GamePlay = () => {
                         onClick={() => {
                             if (turnStarted)
                                 alert("이벤트를 먼저 선택해주세요!");
-                            enemyTurn();
+                            startTurn();
                         }}
                     >
                         <img src={turnStarted ? DisabledNextIcon : NextIcon} />
