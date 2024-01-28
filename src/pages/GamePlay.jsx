@@ -22,7 +22,6 @@ import DisabledNextIcon from "../assets/disabled_next.png";
 
 import BuildingData from "../data/building.json";
 import EnemyTimingData from "../data/enemyTiming.json";
-import StartEventData from "../data/startEvent.json";
 import EventData from "../data/event.json";
 import UnitData from "../data/unit.json";
 import Settings from "../data/settings.json";
@@ -32,6 +31,7 @@ const width = Settings.board.width,
     defaultHP = Settings.defaultHP,
     defaultMoney = Settings.defaultMoney,
     defaultUnits = Settings.defaultUnits,
+    defaultEvents = Settings.defaultEvents,
     buildingWidth = Settings.buildingBoard.width,
     buildingHeight = Settings.buildingBoard.height;
 
@@ -49,10 +49,17 @@ const GamePlay = () => {
 
     const [type, setType] = useState(0); // 0: event 1: units 2: buildings
 
-    const [events, setEvents] = useState([0, 1, 2]);
+    const [eventDeck, setEventDeck] = useState(defaultEvents);
     const [buildingBoard, setBuildingBoard] = useState(
         Array.from({ length: buildingWidth * buildingHeight }, () => {
-            return { type: "", point: 0 };
+            return {
+                type: "",
+                point: {
+                    default: 0,
+                    military: 0,
+                    economy: 0,
+                },
+            };
         })
     );
     const [saleBuildings, setSaleBuildings] = useState([]);
@@ -66,11 +73,45 @@ const GamePlay = () => {
 
     const [gameResult, setGameResult] = useState(0); // 1: win 0: 진행중 -1: lose
 
+    const checkBuilding = (building) => {
+        let res = false;
+        for (let i = 0; i < buildingWidth * buildingHeight; i++) {
+            res ||= buildingBoard[i].type === building;
+        }
+        return res;
+    };
+
+    const getBuildingPoint = (building) => {
+        let res = [0, 0];
+        for (let i = 0; i < buildingWidth * buildingHeight; i++) {
+            if (buildingBoard[i].type === building) {
+                res[0]++;
+                res[1] += buildingBoard[i].point.default;
+                if (BuildingData[building].type === "military")
+                    res[1] += buildingBoard[i].point.military;
+                if (BuildingData[building].type === "economy")
+                    res[1] += buildingBoard[i].point.economy;
+            }
+        }
+        return res;
+    };
+
     const startTurn = () => {
         setTurnStarted(true);
         setTurn(turn + 1);
 
         setSaleBuildings(randomSelection(Object.keys(BuildingData), 4));
+
+        Object.keys(BuildingData).forEach((x) => {
+            if (BuildingData[x].type === "economy") {
+                let k = getBuildingPoint(x);
+                setMoney(
+                    money +
+                        k[0] * BuildingData[x].update.money +
+                        k[1] * BuildingData[x].update.buff.money
+                );
+            }
+        });
 
         let i, bd, newbd, unitInfo, living, newBoard;
         newBoard = [...board];
@@ -97,6 +138,21 @@ const GamePlay = () => {
                                 type: "",
                                 power: 0,
                             };
+
+                            Object.keys(BuildingData).forEach((x) => {
+                                if (BuildingData[x].type === "military") {
+                                    let k = getBuildingPoint(x);
+                                    setMoney(
+                                        money +
+                                            k[0] *
+                                                BuildingData[x].update
+                                                    .killMoney +
+                                            k[1] *
+                                                BuildingData[x].update.buff
+                                                    .killMoney
+                                    );
+                                }
+                            });
                         } else {
                             newBoard[fromXY(x, y - i)].power -=
                                 unitInfo.rangedAttack;
@@ -128,7 +184,23 @@ const GamePlay = () => {
                                 living = false;
                                 newBoard[fromXY(x, y - i)].power -= bd.power;
                             } else if (newbd.power === bd.power) living = false;
-                            else bd.power -= newbd.power;
+                            else {
+                                bd.power -= newbd.power;
+                                Object.keys(BuildingData).forEach((x) => {
+                                    if (BuildingData[x].type === "military") {
+                                        let k = getBuildingPoint(x);
+                                        setMoney(
+                                            money +
+                                                k[0] *
+                                                    BuildingData[x].update
+                                                        .killMoney +
+                                                k[1] *
+                                                    BuildingData[x].update.buff
+                                                        .killMoney
+                                        );
+                                    }
+                                });
+                            }
                             break;
                         }
                     }
@@ -158,6 +230,10 @@ const GamePlay = () => {
     useEffect(() => {
         startTurn();
     }, []);
+
+    useEffect(() => {
+        // Test
+    });
 
     return (
         <div className="grid">
@@ -478,19 +554,96 @@ const GamePlay = () => {
                                                                         [
                                                                             ...buildingBoard,
                                                                         ];
+
+                                                                    BuildingData[
+                                                                        info
+                                                                            .type
+                                                                    ].buffRange.forEach(
+                                                                        (k) => {
+                                                                            let i =
+                                                                                    k[0] +
+                                                                                    x,
+                                                                                j =
+                                                                                    k[1] +
+                                                                                    y;
+
+                                                                            if (
+                                                                                i <
+                                                                                    0 ||
+                                                                                j <
+                                                                                    0 ||
+                                                                                i >=
+                                                                                    buildingWidth ||
+                                                                                j >=
+                                                                                    buildingHeight
+                                                                            )
+                                                                                return;
+
+                                                                            if (
+                                                                                BuildingData[
+                                                                                    info
+                                                                                        .type
+                                                                                ]
+                                                                                    .pointTarget ===
+                                                                                "everything"
+                                                                            )
+                                                                                boardCopy[
+                                                                                    fromXY(
+                                                                                        i,
+                                                                                        j,
+                                                                                        true
+                                                                                    )
+                                                                                ]
+                                                                                    .point
+                                                                                    .default--;
+                                                                            else
+                                                                                boardCopy[
+                                                                                    fromXY(
+                                                                                        i,
+                                                                                        j,
+                                                                                        true
+                                                                                    )
+                                                                                ]
+                                                                                    .point[
+                                                                                    BuildingData[
+                                                                                        info
+                                                                                            .type
+                                                                                    ]
+                                                                                        .pointTarget
+                                                                                ]--;
+                                                                        }
+                                                                    );
                                                                     boardCopy[
                                                                         fromXY(
                                                                             x,
                                                                             y,
                                                                             true
                                                                         )
-                                                                    ] = {
-                                                                        type: "",
-                                                                        point: 0,
-                                                                    };
+                                                                    ].type = "";
+
                                                                     setBuildingBoard(
                                                                         boardCopy
                                                                     );
+
+                                                                    if (
+                                                                        !checkBuilding(
+                                                                            info.type
+                                                                        )
+                                                                    ) {
+                                                                        setEventDeck(
+                                                                            eventDeck.filter(
+                                                                                (
+                                                                                    e
+                                                                                ) =>
+                                                                                    !BuildingData[
+                                                                                        info
+                                                                                            .type
+                                                                                    ].start.newCard.includes(
+                                                                                        e
+                                                                                    )
+                                                                            )
+                                                                        );
+                                                                    }
                                                                 }
                                                             }}
                                                         ></th>
@@ -629,10 +782,77 @@ const GamePlay = () => {
                                                                 Yselection - 1,
                                                                 true
                                                             )
-                                                        ] = {
-                                                            type: selectedBuilding,
-                                                            point: 0,
-                                                        };
+                                                        ].type =
+                                                            selectedBuilding;
+
+                                                        if (
+                                                            !checkBuilding(
+                                                                selectedBuilding
+                                                            )
+                                                        ) {
+                                                            setEventDeck(
+                                                                eventDeck.concat(
+                                                                    BuildingData[
+                                                                        selectedBuilding
+                                                                    ].start
+                                                                        .newCard
+                                                                )
+                                                            );
+                                                        }
+
+                                                        BuildingData[
+                                                            selectedBuilding
+                                                        ].buffRange.forEach(
+                                                            (x) => {
+                                                                let i =
+                                                                        x[0] +
+                                                                        Xselection -
+                                                                        1,
+                                                                    j =
+                                                                        x[1] +
+                                                                        Yselection -
+                                                                        1;
+
+                                                                if (
+                                                                    i < 0 ||
+                                                                    j < 0 ||
+                                                                    i >=
+                                                                        buildingWidth ||
+                                                                    j >=
+                                                                        buildingHeight
+                                                                )
+                                                                    return;
+
+                                                                if (
+                                                                    BuildingData[
+                                                                        selectedBuilding
+                                                                    ]
+                                                                        .pointTarget ===
+                                                                    "everything"
+                                                                )
+                                                                    boardCopy[
+                                                                        fromXY(
+                                                                            i,
+                                                                            j,
+                                                                            true
+                                                                        )
+                                                                    ].point
+                                                                        .default++;
+                                                                else
+                                                                    boardCopy[
+                                                                        fromXY(
+                                                                            i,
+                                                                            j,
+                                                                            true
+                                                                        )
+                                                                    ].point[
+                                                                        BuildingData[
+                                                                            selectedBuilding
+                                                                        ]
+                                                                            .pointTarget
+                                                                    ]++;
+                                                            }
+                                                        );
                                                         setBuildingBoard(
                                                             boardCopy
                                                         );

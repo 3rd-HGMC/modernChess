@@ -9,5 +9,13 @@
     },
     "defaultHP": 15,
     "defaultMoney": 100000,
-    "defaultUnits": ["infantry", "scout", "sniper"]
+    "defaultUnits": ["infantry", "scout", "sniper"],
+    "defaultEvents": [
+        "anxiety",
+        "happy",
+        "subsidy",
+        "nothing",
+        "desertion",
+        "earthquake"
+    ]
 }
