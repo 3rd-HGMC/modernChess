@@ -43,13 +43,13 @@
                 "description": "5골드를 받습니다."
             },
             {
-                "name": "앞으론 건물을 지어달라고 하자",
+                "name": "앞으론 은행를 지어달라고 하자",
                 "effect": {
                     "money": 5,
                     "newCard": ["buildingSupport"],
                     "deleteThisCard": true
                 },
-                "description": "5골드를 받습니다. 건물을 짓는 이벤트가 이 이벤트를 대체합니다."
+                "description": "5골드를 받습니다. 은행를 짓는 이벤트로 이 이벤트를 대체합니다."
             },
             {
                 "name": "...이런 거 필요없어",
@@ -63,23 +63,25 @@
         "id": 1
     },
     "buildingSupport": {
-        "name": "정부가 건설을 지원해줍니다!",
+        "name": "정부가 은행 건설을 지원해줍니다!",
         "options": [
             {
                 "name": "감사인사를 전하자",
                 "effect": {
-                    "newBuilding": ["random"]
+                    "money": -5,
+                    "newBuilding": ["bank"]
                 },
-                "description": "무작위 건물 1개를 건설합니다."
+                "description": "은행 1개를 무작위 위치에 건설합니다."
             },
             {
                 "name": "앞으론 돈으로 달라고 하자",
                 "effect": {
-                    "newBuilding": ["random"],
+                    "money": -5,
+                    "newBuilding": ["bank"],
                     "newCard": ["subsidy"],
                     "deleteThisCard": true
                 },
-                "description": "무작위 건물 1개를 건설합니다. 돈을 받는 이벤트가 이 이벤트를 대체합니다."
+                "description": "5골드를 소모하여 은행 1개를 무작위 위치에 건설합니다. 돈을 받는 이벤트가 이 이벤트를 대체합니다."
             },
             {
                 "name": "...이런 거 필요없어",
@@ -97,14 +99,17 @@
         "options": [
             {
                 "name": "무슨 일 없나?",
+                "effect": {},
                 "description": "아무 일도 일어나지 않습니다."
             },
             {
                 "name": "희소식이군",
+                "effect": {},
                 "description": "아무 일도 일어나지 않습니다."
             },
             {
-                "name": "...?",
+                "name": "그렇군",
+                "effect": {},
                 "description": "아무 일도 일어나지 않습니다."
             }
         ],
@@ -146,24 +151,27 @@
             {
                 "name": "훌륭하군! 학교를 지어보자",
                 "effect": {
+                    "money": -5,
                     "newBuilding": ["school"]
                 },
-                "description": "무작위 위치에 학교를 건설합니다."
+                "description": "5골드를 소모하여 무작위 위치에 학교를 건설합니다."
             },
             {
                 "name": "교육에 관해 세금을 좀 받자",
                 "effect": {
-                    "money": 7
+                    "money": 5
                 },
-                "description": "7골드를 휙득합니다."
+                "description": "5골드를 휙득합니다."
             },
             {
-                "name": "이번 기회에 교육에 투자하자",
+                "name": "시설을 보강하자",
                 "effect": {
                     "money": -5,
-                    "newBuilding": ["school", "school"]
+                    "randomBuilding": {
+                        "point": 2
+                    }
                 },
-                "description": "5골드를 소모하여 무작위 위치에 학교 2개를 건설합니다."
+                "description": "5골드를 소모하여 무작위 건물들의 포인트가 2 증가합니다."
             }
         ],
         "code": "education",
@@ -184,19 +192,19 @@
                 "effect": {
                     "money": -2,
                     "randomBuilding": {
-                        "point": -2
+                        "point": -1
                     }
                 },
-                "description": "2골드를 소모합니다. 무작위 건물들의 포인트가 총 2 감소합니다."
+                "description": "2골드를 소모합니다. 무작위 건물들의 포인트가 1 감소합니다."
             },
             {
                 "name": "...그래서 뭐?",
                 "effect": {
                     "randomBuilding": {
-                        "point": -5
+                        "point": -2
                     }
                 },
-                "description": "2골드를 소모합니다. 무작위 건물들의 포인트가 총 5 감소합니다."
+                "description": "무작위 건물들의 포인트가 총 2 감소합니다."
             }
         ],
         "code": "anxiety",
@@ -324,12 +332,11 @@
                 "description": "폭격기를 사용할 수 있게 됩니다. 이미 사용할 수 있다면 전투력 4를 추가로 부여합니다. 이 카드를 이벤트 덱에서 제거합니다."
             },
             {
-                "name": "지진발생기를 연구해보자",
+                "name": "연구말고 돈이 급하다",
                 "effect": {
-                    "newCard": ["earthquake"],
-                    "deleteThisCard": true
+                    "money": 10
                 },
-                "description": "상대방 이벤트 덱에 지진 이벤트를 섞어넣습니다. 이 카드를 이벤트 덱에서 제거합니다."
+                "description": "10골드를 얻습니다."
             }
         ],
         "code": "militaryResearch",
