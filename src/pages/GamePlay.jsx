@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { fromXY, range } from "../utils.js";
+import { fromXY, range, randomSelection } from "../utils.js";
 
 import "../styles/GamePlay.css";
 import Black from "../assets/black.png";
@@ -20,11 +20,6 @@ import BuildingsIcon from "../assets/buildings.png";
 import NextIcon from "../assets/next.png";
 import DisabledNextIcon from "../assets/disabled_next.png";
 
-import BuildingType1 from "../assets/building_type_1.png";
-import BuildingType2 from "../assets/building_type_2.png";
-import BuildingType3 from "../assets/building_type_3.png";
-import BuildingType4 from "../assets/building_type_4.png";
-
 import BuildingData from "../data/building.json";
 import EnemyTimingData from "../data/enemyTiming.json";
 import StartEventData from "../data/startEvent.json";
@@ -36,7 +31,9 @@ const width = Settings.board.width,
     height = Settings.board.height,
     defaultHP = Settings.defaultHP,
     defaultMoney = Settings.defaultMoney,
-    defaultUnits = Settings.defaultUnits;
+    defaultUnits = Settings.defaultUnits,
+    buildingWidth = Settings.buildingBoard.width,
+    buildingHeight = Settings.buildingBoard.height;
 
 const GamePlay = () => {
     const [board, setBoard] = useState(
@@ -53,12 +50,17 @@ const GamePlay = () => {
     const [type, setType] = useState(0); // 0: event 1: units 2: buildings
 
     const [events, setEvents] = useState([0, 1, 2]);
-    const [buildings, setBuildings] = useState([1, 2, 3, 4]);
+    const [buildingBoard, setBuildingBoard] = useState(
+        Array.from({ length: buildingWidth * buildingHeight }, () => {
+            return { type: "", point: 0 };
+        })
+    );
+    const [saleBuildings, setSaleBuildings] = useState([]);
 
     const [turnStarted, setTurnStarted] = useState(true);
 
     const [selectedUnit, setSelectedUnit] = useState("none");
-    const [selectedBuilding, setSelectedBuilding] = useState(0); // 0: none 나머지는 순서대로
+    const [selectedBuilding, setSelectedBuilding] = useState("none");
 
     const [currentUnits, setCurrentUnits] = useState(defaultUnits);
 
@@ -67,6 +69,8 @@ const GamePlay = () => {
     const startTurn = () => {
         setTurnStarted(true);
         setTurn(turn + 1);
+
+        setSaleBuildings(randomSelection(Object.keys(BuildingData), 4));
 
         let i, bd, newbd, unitInfo, living, newBoard;
         newBoard = [...board];
@@ -178,7 +182,7 @@ const GamePlay = () => {
                                                       }.png`
                                                     : y === 0
                                                     ? Blue
-                                                    : y === 9
+                                                    : y === height - 1
                                                     ? Red
                                                     : Black
                                             })`,
@@ -275,6 +279,22 @@ const GamePlay = () => {
                                                 type="button"
                                                 className="btn smallBtn okBtn"
                                                 onClick={() => {
+                                                    let left = width;
+                                                    for (
+                                                        let i = 0;
+                                                        i < width;
+                                                        i++
+                                                    ) {
+                                                        if (
+                                                            board[
+                                                                fromXY(
+                                                                    i,
+                                                                    height - 1
+                                                                )
+                                                            ].type !== ""
+                                                        )
+                                                            left--;
+                                                    }
                                                     if (
                                                         money <
                                                         UnitData[selectedUnit]
@@ -282,6 +302,10 @@ const GamePlay = () => {
                                                     )
                                                         alert(
                                                             "돈이 부족합니다"
+                                                        );
+                                                    else if (!left)
+                                                        alert(
+                                                            "남은 칸이 없습니다"
                                                         );
                                                     else {
                                                         let selection;
@@ -301,7 +325,7 @@ const GamePlay = () => {
                                                                 fromXY(
                                                                     selection -
                                                                         1,
-                                                                    9
+                                                                    height - 1
                                                                 )
                                                             ].type !== ""
                                                         );
@@ -319,7 +343,7 @@ const GamePlay = () => {
                                                         boardCopy[
                                                             fromXY(
                                                                 selection - 1,
-                                                                9
+                                                                height - 1
                                                             )
                                                         ] = {
                                                             team: "red",
@@ -354,7 +378,7 @@ const GamePlay = () => {
                     ) : (
                         <div className="buildings">
                             <div className="buildingButtons">
-                                {buildings.map((building) => (
+                                {saleBuildings.map((building) => (
                                     <button
                                         key={`building${building}`}
                                         type="button"
@@ -363,11 +387,11 @@ const GamePlay = () => {
                                             setSelectedBuilding(building)
                                         }
                                         style={{
-                                            backgroundImage: BuildingType1,
+                                            backgroundImage: `url(/modernChess/images/buildings/types/${BuildingData[building].type}.png)`,
                                         }}
                                     >
                                         <img
-                                            src={`url(/modernChess/images/buildings/bank.png)`}
+                                            src={`/modernChess/images/buildings/${building}.png`}
                                         />
                                     </button>
                                 ))}
@@ -375,20 +399,103 @@ const GamePlay = () => {
                             <div className="buildBoardContainer">
                                 <table className="buildingBoard board">
                                     <tbody>
-                                        {range(2).map((x) => (
+                                        {range(buildingHeight).map((y) => (
                                             <tr
-                                                key={`boardline${x}`}
+                                                key={`boardline${y}`}
                                                 className="boardLine"
                                             >
-                                                {range(6).map((y) => (
-                                                    <th
-                                                        key={`board${x}${y}`}
-                                                        className="boardBlank"
-                                                        style={{
-                                                            backgroundImage: `url(${Black})`,
-                                                        }}
-                                                    ></th>
-                                                ))}
+                                                {range(buildingWidth).map(
+                                                    (x) => (
+                                                        <th
+                                                            key={`board${x}${y}`}
+                                                            className="boardBlank"
+                                                            style={{
+                                                                backgroundImage: `url(${
+                                                                    buildingBoard[
+                                                                        fromXY(
+                                                                            x,
+                                                                            y,
+                                                                            true
+                                                                        )
+                                                                    ].type !==
+                                                                    ""
+                                                                        ? `/modernChess/images/buildings/${
+                                                                              buildingBoard[
+                                                                                  fromXY(
+                                                                                      x,
+                                                                                      y,
+                                                                                      true
+                                                                                  )
+                                                                              ]
+                                                                                  .type
+                                                                          }.png`
+                                                                        : Black
+                                                                })`,
+                                                            }}
+                                                            onClick={() => {
+                                                                const info =
+                                                                    buildingBoard[
+                                                                        fromXY(
+                                                                            x,
+                                                                            y,
+                                                                            true
+                                                                        )
+                                                                    ];
+                                                                if (
+                                                                    info.type ===
+                                                                    ""
+                                                                )
+                                                                    return;
+
+                                                                if (
+                                                                    !confirm(
+                                                                        "정말로 이 건물을 제거하겠습니까?"
+                                                                    )
+                                                                )
+                                                                    return;
+
+                                                                if (
+                                                                    money <
+                                                                    BuildingData[
+                                                                        info
+                                                                            .type
+                                                                    ].cost
+                                                                )
+                                                                    alert(
+                                                                        "돈이 부족합니다"
+                                                                    );
+                                                                else {
+                                                                    setMoney(
+                                                                        money -
+                                                                            BuildingData[
+                                                                                info
+                                                                                    .type
+                                                                            ]
+                                                                                .cost
+                                                                    );
+
+                                                                    let boardCopy =
+                                                                        [
+                                                                            ...buildingBoard,
+                                                                        ];
+                                                                    boardCopy[
+                                                                        fromXY(
+                                                                            x,
+                                                                            y,
+                                                                            true
+                                                                        )
+                                                                    ] = {
+                                                                        type: "",
+                                                                        point: 0,
+                                                                    };
+                                                                    setBuildingBoard(
+                                                                        boardCopy
+                                                                    );
+                                                                }
+                                                            }}
+                                                        ></th>
+                                                    )
+                                                )}
                                             </tr>
                                         ))}
                                     </tbody>
@@ -400,17 +507,11 @@ const GamePlay = () => {
                                     backgroundImage: `url(${Description})`,
                                 }}
                             >
-                                {selectedBuilding !== 0 ? (
+                                {selectedBuilding !== "none" ? (
                                     <div>
                                         <div className="description">
                                             <h2>
-                                                무민 : 멋진 기획과 아이콘을
-                                                만듭니다
-                                                <br />
-                                                공격력: 100
-                                                <br /> 방어력: 100
-                                                <br />
-                                                키키를 만나면 강해집니다
+                                                {`<${BuildingData[selectedBuilding].name}> ${BuildingData[selectedBuilding].cost}$ \n${BuildingData[selectedBuilding].description}`}
                                             </h2>
                                         </div>
                                         <div className="buyOption">
@@ -418,7 +519,125 @@ const GamePlay = () => {
                                                 type="button"
                                                 className="btn smallBtn okBtn"
                                                 onClick={() => {
-                                                    setSelectedBuilding(0);
+                                                    let left = Array.from(
+                                                            {
+                                                                length: buildingHeight,
+                                                            },
+                                                            () => buildingWidth
+                                                        ),
+                                                        sumLeft =
+                                                            buildingWidth *
+                                                            buildingHeight;
+
+                                                    for (
+                                                        let i = 0;
+                                                        i < buildingHeight;
+                                                        i++
+                                                    ) {
+                                                        for (
+                                                            let j = 0;
+                                                            j < buildingWidth;
+                                                            j++
+                                                        ) {
+                                                            if (
+                                                                buildingBoard[
+                                                                    fromXY(
+                                                                        j,
+                                                                        i,
+                                                                        true
+                                                                    )
+                                                                ].type !== ""
+                                                            ) {
+                                                                sumLeft--;
+                                                                left[i]--;
+                                                            }
+                                                        }
+                                                    }
+
+                                                    if (
+                                                        money <
+                                                        BuildingData[
+                                                            selectedBuilding
+                                                        ].cost
+                                                    )
+                                                        alert(
+                                                            "돈이 부족합니다"
+                                                        );
+                                                    else if (!sumLeft)
+                                                        alert(
+                                                            "남은 칸이 없습니다"
+                                                        );
+                                                    else {
+                                                        let Xselection,
+                                                            Yselection;
+
+                                                        do {
+                                                            Yselection =
+                                                                parseInt(
+                                                                    prompt(
+                                                                        `건물을 건설할 도시 열 (1 ~ ${buildingHeight})을 골라주세요`
+                                                                    ),
+                                                                    10
+                                                                );
+                                                        } while (
+                                                            isNaN(Yselection) ||
+                                                            Yselection >
+                                                                buildingHeight ||
+                                                            Yselection < 1 ||
+                                                            !left[
+                                                                Yselection - 1
+                                                            ]
+                                                        );
+
+                                                        do {
+                                                            Xselection =
+                                                                parseInt(
+                                                                    prompt(
+                                                                        `건물을 건설할 도시 행 (1 ~ ${buildingWidth})을 골라주세요`
+                                                                    ),
+                                                                    10
+                                                                );
+                                                        } while (
+                                                            isNaN(Xselection) ||
+                                                            Xselection >
+                                                                buildingWidth ||
+                                                            Xselection < 1 ||
+                                                            buildingBoard[
+                                                                fromXY(
+                                                                    Xselection -
+                                                                        1,
+                                                                    Yselection -
+                                                                        1,
+                                                                    true
+                                                                )
+                                                            ].type !== ""
+                                                        );
+
+                                                        setMoney(
+                                                            money -
+                                                                BuildingData[
+                                                                    selectedBuilding
+                                                                ].cost
+                                                        );
+
+                                                        let boardCopy = [
+                                                            ...buildingBoard,
+                                                        ];
+                                                        boardCopy[
+                                                            fromXY(
+                                                                Xselection - 1,
+                                                                Yselection - 1,
+                                                                true
+                                                            )
+                                                        ] = {
+                                                            type: selectedBuilding,
+                                                            point: 0,
+                                                        };
+                                                        setBuildingBoard(
+                                                            boardCopy
+                                                        );
+                                                    }
+                                                    setSelectedBuilding("none");
                                                 }}
                                             >
                                                 <img src={OkIcon} />
@@ -427,7 +646,7 @@ const GamePlay = () => {
                                                 type="button"
                                                 className="btn smallBtn okBtn"
                                                 onClick={() =>
-                                                    setSelectedBuilding(0)
+                                                    setSelectedBuilding("none")
                                                 }
                                             >
                                                 <img src={NoIcon} />

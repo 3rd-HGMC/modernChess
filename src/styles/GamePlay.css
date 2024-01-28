@@ -138,6 +138,9 @@
 }
 
 .buildingDetailContainer .description {
+    padding-left: 5%;
+    padding-right: 5%;
+    white-space: pre-line;
     height: 8vw;
     display: flex;
     align-items: center;
