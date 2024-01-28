@@ -34,7 +34,7 @@ const width = Settings.board.width,
     defaultEvents = Settings.defaultEvents,
     buildingWidth = Settings.buildingBoard.width,
     buildingHeight = Settings.buildingBoard.height,
-    enemyTiming = Settings.enemyTiming
+    enemyTiming = Settings.enemyTiming,
     moneyByTurn = Settings.moneyByTurn;
 
 const GamePlay = () => {
