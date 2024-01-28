@@ -35,10 +35,10 @@ body {
     border: 0;
 }
 
-.btn:hover {
+.btn:not(.disabled):hover {
     transform: scale(1.03);
 }
 
-.btn:active {
+.btn:not(.disabled):active {
     transform: scale(0.98);
 }

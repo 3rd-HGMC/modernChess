@@ -1,0 +1,19 @@
+.helpContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.interaction {
+    text-align: center;
+}
+
+.image img {
+    width: 40vw;
+    height: 30vw;
+}
+
+.image {
+    margin-bottom: 50px;
+}
