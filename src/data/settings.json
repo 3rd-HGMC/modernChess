@@ -1,6 +1,6 @@
 {
     "board": {
-        "width": 8,
+        "width": 5,
         "height": 10
     },
     "buildingBoard": {
