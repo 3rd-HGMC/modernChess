@@ -1,137 +1,144 @@
 {
-    "school": {
-        "name": "학교",
-        "description": "인재들을 육성하는 이벤트를 추가합니다.\n인접한 건물에 1포인트를 제공합니다.",
-        "start": {
-            "newCard": ["genius"]
+    "school" : {
+        "name" : "학교",
+        "description" : "인재들을 육성하는 이벤트를 추가합니다. 인접한 건물에 1포인트를 제공합니다.",
+        "start" : {
+            "newCard" : [
+                "genius"
+            ]
         },
-        "update": {},
-        "updateByTurn": {},
-        "cost": 10,
-        "pointTarget": "everything",
-        "buffRange": [
+        "update" : {},
+        "updateByTurn" : {},
+        "cost" : 10,
+        "pointTarget" : "everything",
+        "buffRange" : [
             [1, 0],
             [0, 1],
             [-1, 0],
             [0, -1]
         ],
-        "code": "school",
-        "type": "knowledge"
+        "code" : "school",
+        "type" : "knowledge"
     },
-    "lab": {
-        "name": "연구소",
-        "description": "연구소만의 이벤트들을 이벤트 덱에 섞어넣습니다.\n인접한 건물에 1포인트를 제공합니다.",
-        "start": {
-            "newCard": ["R&D", "militaryResearch"]
+    "lab" : {
+        "name" : "연구소",
+        "description" : "연구소만의 이벤트들을 이벤트 덱에 섞어넣습니다. 인접한 건물에 1포인트를 제공합니다.",
+        "start" : {
+            "newCard" : [
+                "R&D",
+                "militaryResearch"
+            ]
         },
-        "update": {},
-        "updateByTurn": {},
-        "cost": 25,
-        "pointTarget": "everything",
-        "buffRange": [
+        "update" : {},
+        "updateByTurn" : {},
+        "cost" : 25,
+        "pointTarget" : "everything",
+        "buffRange" : [
             [1, 0],
             [0, 1],
             [-1, 0],
             [0, -1]
         ],
-        "code": "lab",
-        "type": "knowledge"
+        "code" : "lab",
+        "type" : "knowledge"
     },
-    "barrack": {
-        "name": "막사",
-        "description": "상대 유닛을 처치하였을 때 2골드 (+ 1) 를 추가로 얻습니다.\n인접한 군사 건물에 1포인트를 제공합니다.",
-        "start": {},
-        "update": {
-            "killMoney": 2,
-            "buff": {
-                "killMoney": 1
+    "barrack" : {
+        "name" : "막사",
+        "description" : "상대 유닛을 처치하였을 때 2골드 (+ 1) 를 추가로 얻습니다. / 인접한 군사 건물에 1포인트를 제공합니다.",
+        "start" : {},
+        "update" : {
+            "killMoney" : 2,
+            "buff" : {
+                "killMoney" : 1
             }
         },
-        "updateByTurn": {},
-        "cost": 13,
-        "pointTarget": "military",
-        "buffRange": [
+        "updateByTurn" : {},
+        "cost" : 13,
+        "pointTarget" : "military",
+        "buffRange" : [
             [1, 0],
             [0, 1],
             [-1, 0],
             [0, -1]
         ],
-        "code": "barrack",
-        "type": "military"
+        "code" : "barrack",
+        "type" : "military"
     },
-    "munitionsFactory": {
-        "name": "군수공장",
-        "description": "상대 유닛을 처치하였을 때 5골드 (+ 2)를 추가로 얻습니다.\n인접한 군사 건물에 1포인트를 제공합니다.",
-        "start": {},
-        "update": {
-            "killMoney": 5,
-            "buff": {
-                "killMoney": 2
+    "munitionsFactory" : {
+        "name" : "군수공장",
+        "description" : "상대 유닛을 처치하였을 때 5골드 (+ 2)를 추가로 얻습니다. / 인접한 군사 건물에 1포인트를 제공합니다.",
+        "start" : {},
+        "update" : {
+            "killMoney" : 5,
+            "buff" : {
+                "killMoney" : 2
             }
         },
-        "updateByTurn": {},
-        "cost": 25,
-        "pointTarget": "military",
-        "buffRange": [
+        "updateByTurn" : {},
+        "cost" : 25,
+        "pointTarget" : "military",
+        "buffRange" : [
             [1, 0],
             [0, 1],
             [-1, 0],
             [0, -1]
         ],
-        "code": "munitionsFactory",
-        "type": "military"
+        "code" : "munitionsFactory",
+        "type" : "military"
     },
-    "bank": {
-        "name": "은행",
-        "description": "턴마다 1골드 (+ 1)를 얻습니다.\n1칸 이내의 경제 건물에 1포인트를 제공합니다.",
-        "start": {},
-        "update": {
-            "money": 1,
-            "buff": {
-                "money": 1
+    "bank" : {
+        "name" : "은행",
+        "description" : "턴마다 1골드 (+ 1)를 얻습니다. / 인접한 경제 건물에 1포인트를 제공합니다.",
+        "start" : {},
+        "update" : {},
+        "updateByTurn" : {
+            "money" : 1,
+            "buff" : {
+                "money" : 1
             }
         },
-        "cost": 13,
-        "pointTarget": "economy",
-        "buffRange": [
+        "cost" : 20,
+        "pointTarget" : "economy",
+        "buffRange" : [
             [1, 0],
             [0, 1],
             [-1, 0],
             [0, -1]
         ],
-        "code": "bank",
-        "type": "economy"
+        "code" : "bank",
+        "type" : "economy"
     },
-    "factory": {
-        "name": "공장",
-        "description": "턴마다 2골드 (+ 2)를 얻습니다.\n1칸 이내의 경제 건물에 1포인트를 제공합니다.",
-        "start": {},
-        "update": {
-            "money": 2,
-            "buff": {
-                "money": 2
+    "factory" : {
+        "name" : "공장",
+        "description" : "턴마다 2골드 (+ 2)를 얻습니다. / 인접한 경제 건물에 1포인트를 제공합니다.",
+        "start" : {},
+        "update" : {},
+        "updateByTurn" : {
+            "money" : 2,
+            "buff" : {
+                "money" : 2
             }
         },
-        "cost": 30,
-        "pointTarget": "economy",
-        "buffRange": [
+        "cost" : 30,
+        "pointTarget" : "economy",
+        "buffRange" : [
             [1, 0],
             [0, 1],
             [-1, 0],
             [0, -1]
         ],
-        "code": "factory",
-        "type": "economy"
+        "code" : "factory",
+        "type" : "economy"
     },
-    "trainStation": {
-        "name": "기차역",
-        "description": "같은 행과 열의 모든 건물에 1포인트를 제공합니다. ",
-        "start": {},
-        "update": {},
-        "updateByTurn": {},
-        "cost": 15,
-        "pointTarget": "everything",
-        "buffRange": [
+    "trainStation" : {
+        "name" : "기차역",
+        "description" : "같은 행과 열의 모든 건물에 1포인트를 제공합니다. ",
+        "start" : {},
+        "update" : {},
+        "updateByTurn" : {},
+        "cost" : 15,
+        "pointTarget" : "everything",
+        "buffRange" : [
             [1, 0],
             [2, 0],
             [3, 0],
@@ -153,7 +160,7 @@
             [0, -4],
             [0, -5]
         ],
-        "code": "trainStation",
-        "type": "support"
+        "code" : "trainStation",
+        "type" : "support"
     }
 }
