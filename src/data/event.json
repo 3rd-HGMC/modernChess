@@ -1,361 +1,345 @@
 {
-    "earthquake" : {
-        "name" : "지진이 발생했습니다!",
-        "options" : [
+    "earthquake": {
+        "name": "지진이 발생했습니다!",
+        "options": [
             {
-                "name" : "건물을 수리하자",
-                "effect" : {
-                    "money" : -7
+                "name": "건물을 수리하자",
+                "effect": {
+                    "money": -7
                 },
-                "description" : "7골드를 소모합니다."
+                "description": "7골드를 소모합니다."
             },
             {
-                "name" : "인명 피해라도 줄이자",
-                "effect" : {
-                    "money" : -3,
-                    "randomBuilding" : {
-                        "delete" : 1
+                "name": "인명 피해라도 줄이자",
+                "effect": {
+                    "money": -3,
+                    "randomBuilding": {
+                        "delete": 1
                     }
                 },
-                "description" : "3골드를 소모합니다. 무작위 건물 1개가 부서집니다."
+                "description": "3골드를 소모합니다. 무작위 건물 1개가 부서집니다."
             },
             {
-                "name" : "...아쉬운 거지",
-                "effect" : {
-                    "randomBuilding" : {
-                        "delete" : 2
+                "name": "...아쉬운 거지",
+                "effect": {
+                    "randomBuilding": {
+                        "delete": 2
                     }
                 },
-                "description" : "무작위 건물 2개가 부서집니다."
+                "description": "무작위 건물 2개가 부서집니다."
             }
         ],
-        "code" : "earthquake",
-        "id" : 0
+        "code": "earthquake",
+        "id": 0
     },
-    "subsidy" : {
-        "name" : "지원금이 도착했습니다!",
-        "options" : [
+    "subsidy": {
+        "name": "지원금이 도착했습니다!",
+        "options": [
             {
-                "name" : "감사인사를 전하자",
-                "effect" : {
-                    "money" : 5
+                "name": "감사인사를 전하자",
+                "effect": {
+                    "money": 5
                 },
-                "description" : "5골드를 받습니다."
+                "description": "5골드를 받습니다."
             },
             {
-                "name" : "앞으론 은행를 지어달라고 하자",
-                "effect" : {
-                    "money" : 5,
-                    "newCard" : [
-                        "buildingSupport"
-                    ],
-                    "deleteThisCard" : true
+                "name": "앞으론 은행를 지어달라고 하자",
+                "effect": {
+                    "money": 5,
+                    "newCard": ["buildingSupport"],
+                    "deleteThisCard": true
                 },
-                "description" : "5골드를 받습니다. 은행를 짓는 이벤트로 이 이벤트를 대체합니다."
+                "description": "5골드를 받습니다. 은행를 짓는 이벤트로 이 이벤트를 대체합니다."
             },
             {
-                "name" : "...이런 거 필요없어",
-                "effect" : {
-                    "deleteThisCard" : true
+                "name": "...이런 거 필요없어",
+                "effect": {
+                    "deleteThisCard": true
                 },
-                "description" : "이 카드를 제거합니다."
+                "description": "이 카드를 제거합니다."
             }
         ],
-        "code" : "subsidy",
-        "id" : 1
+        "code": "subsidy",
+        "id": 1
     },
-    "buildingSupport" : {
-        "name" : "정부가 은행 건설을 지원해줍니다!",
-        "options" : [
+    "buildingSupport": {
+        "name": "정부가 은행 건설을 지원해줍니다!",
+        "options": [
             {
-                "name" : "감사인사를 전하자",
-                "effect" : {
-                    "money" : -5,
-                    "newBuilding" : [
-                        "bank"
-                    ]
+                "name": "감사인사를 전하자",
+                "effect": {
+                    "money": -5,
+                    "newBuilding": ["bank"]
                 },
-                "description" : "은행 1개를 무작위 위치에 건설합니다."
+                "description": "은행 1개를 무작위 위치에 건설합니다."
             },
             {
-                "name" : "앞으론 돈으로 달라고 하자",
-                "effect" : {
-                    "money" : -5,
-                    "newBuilding" : [
-                        "bank"
-                    ],
-                    "newCard" : [
-                        "subsidy"
-                    ],
-                    "deleteThisCard" : true
+                "name": "앞으론 돈으로 달라고 하자",
+                "effect": {
+                    "money": -5,
+                    "newBuilding": ["bank"],
+                    "newCard": ["subsidy"],
+                    "deleteThisCard": true
                 },
-                "description" : "5골드를 소모하여 은행 1개를 무작위 위치에 건설합니다. 돈을 받는 이벤트가 이 이벤트를 대체합니다."
+                "description": "5골드를 소모하여 은행 1개를 무작위 위치에 건설합니다. 돈을 받는 이벤트가 이 이벤트를 대체합니다."
             },
             {
-                "name" : "...이런 거 필요없어",
-                "effect" : {
-                    "deleteThisCard" : true
+                "name": "...이런 거 필요없어",
+                "effect": {
+                    "deleteThisCard": true
                 },
-                "description" : "이 카드를 제거합니다."
+                "description": "이 카드를 제거합니다."
             }
         ],
-        "code" : "buildingSupport",
-        "id" : 2
+        "code": "buildingSupport",
+        "id": 2
     },
-    "nothing" : {
-        "name" : "아무 일도 일어나지 않았습니다!",
-        "options" : [
+    "nothing": {
+        "name": "아무 일도 일어나지 않았습니다!",
+        "options": [
             {
-                "name" : "무슨 일 없나?",
-                "effect" : {},
-                "description" : "아무 일도 일어나지 않습니다."
+                "name": "무슨 일 없나?",
+                "effect": {},
+                "description": "아무 일도 일어나지 않습니다."
             },
             {
-                "name" : "희소식이군",
-                "effect" : {},
-                "description" : "아무 일도 일어나지 않습니다."
+                "name": "희소식이군",
+                "effect": {},
+                "description": "아무 일도 일어나지 않습니다."
             },
             {
-                "name" : "그렇군",
-                "effect" : {},
-                "description" : "아무 일도 일어나지 않습니다."
+                "name": "그렇군",
+                "effect": {},
+                "description": "아무 일도 일어나지 않습니다."
             }
         ],
-        "code" : "nothing",
-        "id" : 3
+        "code": "nothing",
+        "id": 3
     },
-    "desertion" : {
-        "name" : "탈영 문제가 생기기 시작합니다..",
-        "options" : [
+    "desertion": {
+        "name": "탈영 문제가 생기기 시작합니다..",
+        "options": [
             {
-                "name" : "돈이 필요하던가?",
-                "effect" : {
-                    "money" : -6
+                "name": "돈이 필요하던가?",
+                "effect": {
+                    "money": -6
                 },
-                "description" : "6골드를 소모합니다."
+                "description": "6골드를 소모합니다."
             },
             {
-                "name" : "타협을 하겠네",
-                "effect" : {
-                    "money" : -3,
-                    "deleteSoldier" : 1
+                "name": "타협을 하겠네",
+                "effect": {
+                    "money": -3,
+                    "deleteSoldier": 1
                 },
-                "description" : "3골드를 소모합니다. 무작위 군인 하나를 보드에서 제거합니다."
+                "description": "3골드를 소모합니다. 무작위 군인 하나를 보드에서 제거합니다."
             },
             {
-                "name" : "...말이 너무 많군",
-                "effect" : {
-                    "deleteSoldier" : 2
+                "name": "...말이 너무 많군",
+                "effect": {
+                    "deleteSoldier": 2
                 },
-                "description" : "무작위 군인 둘을 보드에서 제거합니다."
+                "description": "무작위 군인 둘을 보드에서 제거합니다."
             }
         ],
-        "code" : "desertion",
-        "id" : 4
+        "code": "desertion",
+        "id": 4
     },
-    "education" : {
-        "name" : "시민들이 교육에 대한 관심을 가지기 시작합니다!",
-        "options" : [
+    "education": {
+        "name": "시민들이 교육에 대한 관심을 가지기 시작합니다!",
+        "options": [
             {
-                "name" : "훌륭하군! 학교를 지어보자",
-                "effect" : {
-                    "money" : -5,
-                    "newBuilding" : [
-                        "school"
-                    ]
+                "name": "훌륭하군! 학교를 지어보자",
+                "effect": {
+                    "money": -5,
+                    "newBuilding": ["school"]
                 },
-                "description" : "5골드를 소모하여 무작위 위치에 학교를 건설합니다."
+                "description": "5골드를 소모하여 무작위 위치에 학교를 건설합니다."
             },
             {
-                "name" : "교육에 관해 세금을 좀 받자",
-                "effect" : {
-                    "money" : 5
+                "name": "교육에 관해 세금을 좀 받자",
+                "effect": {
+                    "money": 5
                 },
-                "description" : "5골드를 휙득합니다."
+                "description": "5골드를 휙득합니다."
             },
             {
-                "name" : "시설을 보강하자",
-                "effect" : {
-                    "money" : -5,
-                    "randomBuilding" : {
-                        "point" : 2
+                "name": "시설을 보강하자",
+                "effect": {
+                    "money": -5,
+                    "randomBuilding": {
+                        "point": 2
                     }
                 },
-                "description" : "5골드를 소모하여 무작위 건물들의 포인트가 2 증가합니다."
+                "description": "5골드를 소모하여 무작위 건물들의 포인트가 2 증가합니다."
             }
         ],
-        "code" : "education",
-        "id" : 5
+        "code": "education",
+        "id": 5
     },
-    "anxiety" : {
-        "name" : "시민들이 불안에 떨고 있습니다!",
-        "options" : [
+    "anxiety": {
+        "name": "시민들이 불안에 떨고 있습니다!",
+        "options": [
             {
-                "name" : "프로파간다를 실시하자",
-                "effect" : {
-                    "money" : -5
+                "name": "프로파간다를 실시하자",
+                "effect": {
+                    "money": -5
                 },
-                "description" : "5골드를 소모합니다."
+                "description": "5골드를 소모합니다."
             },
             {
-                "name" : "뭐라도 해보자",
-                "effect" : {
-                    "money" : -2,
-                    "randomBuilding" : {
-                        "point" : -1
+                "name": "뭐라도 해보자",
+                "effect": {
+                    "money": -2,
+                    "randomBuilding": {
+                        "point": -1
                     }
                 },
-                "description" : "2골드를 소모합니다. 무작위 건물들의 포인트가 1 감소합니다."
+                "description": "2골드를 소모합니다. 무작위 건물들의 포인트가 1 감소합니다."
             },
             {
-                "name" : "...그래서 뭐?",
-                "effect" : {
-                    "randomBuilding" : {
-                        "point" : -2
+                "name": "...그래서 뭐?",
+                "effect": {
+                    "randomBuilding": {
+                        "point": -2
                     }
                 },
-                "description" : "무작위 건물들의 포인트가 총 2 감소합니다."
+                "description": "무작위 건물들의 포인트가 총 2 감소합니다."
             }
         ],
-        "code" : "anxiety",
-        "id" : 6
+        "code": "anxiety",
+        "id": 6
     },
-    "happy" : {
-        "name" : "시민들이 각자의 행복을 찾아갑니다!",
-        "options" : [
+    "happy": {
+        "name": "시민들이 각자의 행복을 찾아갑니다!",
+        "options": [
             {
-                "name" : "시설 발전에 힘을 쏟아보자",
-                "effect" : {
-                    "randomBuilding" : {
-                        "point" : 2
+                "name": "시설 발전에 힘을 쏟아보자",
+                "effect": {
+                    "randomBuilding": {
+                        "point": 2
                     }
                 },
-                "description" : "무작위 건물들의 포인트가 총 2 증가합니다."
+                "description": "무작위 건물들의 포인트가 총 2 증가합니다."
             },
             {
-                "name" : "돈을 많이 벌었군! 세금을 걷자",
-                "effect" : {
-                    "money" : 6
+                "name": "돈을 많이 벌었군! 세금을 걷자",
+                "effect": {
+                    "money": 6
                 },
-                "description" : "6골드를 얻습니다."
+                "description": "6골드를 얻습니다."
             },
             {
-                "name" : "교육열도 높아지려나?",
-                "effect" : {
-                    "newCard" : [
-                        "education"
-                    ]
+                "name": "교육열도 높아지려나?",
+                "effect": {
+                    "newCard": ["education"]
                 },
-                "description" : "시민들의 교육열이 높아지는 이벤트가 추가됩니다."
+                "description": "시민들의 교육열이 높아지는 이벤트가 추가됩니다."
             }
         ],
-        "code" : "happy",
-        "id" : 7
+        "code": "happy",
+        "id": 7
     },
-    "genius" : {
-        "name" : "인재들이 도시에 생겨납니다!",
-        "options" : [
+    "genius": {
+        "name": "인재들이 도시에 생겨납니다!",
+        "options": [
             {
-                "name" : "돈을 벌어오도록 하자",
-                "effect" : {
-                    "moneyByVariable" : "schoolMoney",
-                    "variable" : {
-                        "schoolMoney" : 1
+                "name": "돈을 벌어오도록 하자",
+                "effect": {
+                    "moneyByVariable": "schoolMoney",
+                    "variable": {
+                        "schoolMoney": 1
                     }
                 },
-                "description" : "골드를 얻습니다. 다음 인재 등용시 1골드를 추가로 얻습니다. 이 효과는 중첩됩니다."
+                "description": "골드를 얻습니다. 다음 인재 등용시 1골드를 추가로 얻습니다. 이 효과는 중첩됩니다."
             },
             {
-                "name" : "인재 육성에 힘쓰게 하자",
-                "effect" : {
-                    "newCard" : [
-                        "genius"
-                    ]
+                "name": "인재 육성에 힘쓰게 하자",
+                "effect": {
+                    "newCard": ["genius"]
                 },
-                "description" : "이 카드를 하나 더 추가합니다."
+                "description": "이 카드를 하나 더 추가합니다."
             },
             {
-                "name" : "적합한 건물을 찾아보도록 시키자",
-                "effect" : {
-                    "refreshStore" : true
+                "name": "적합한 건물을 찾아보도록 시키자",
+                "effect": {
+                    "refreshStore": true
                 },
-                "description" : "건물 상점을 무작위 건물들로 바꿉니다."
+                "description": "건물 상점을 무작위 건물들로 바꿉니다."
             }
         ],
-        "code" : "genius",
-        "id" : 8
+        "code": "genius",
+        "id": 8
     },
-    "R&D" : {
-        "name" : "연구소에서 R&D 투자를 요구합니다!",
-        "options" : [
+    "R&D": {
+        "name": "연구소에서 R&D 투자를 요구합니다!",
+        "options": [
             {
-                "name" : "연구에 지원하도록 하자",
-                "effect" : {
-                    "money" : -10,
-                    "variable" : {
-                        "labBuff" : 1
+                "name": "연구에 지원하도록 하자",
+                "effect": {
+                    "money": -10,
+                    "variable": {
+                        "labBuff": 1
                     },
-                    "newCard" : [
-                        "R&D"
-                    ]
+                    "newCard": ["R&D"]
                 },
-                "description" : "10골드를 소모합니다. 연구소가 인접한 건물에 1포인트를 추가로 제공합니다. 이 카드를 하나 더 추가합니다."
+                "description": "10골드를 소모합니다. 연구소가 인접한 건물에 1포인트를 추가로 제공합니다. 이 카드를 하나 더 추가합니다."
             },
             {
-                "name" : "경제적 성과를 기준으로 투자하자",
-                "effect" : {
-                    "moneyByVariable" : "labMoney",
-                    "variable" : {
-                        "labMoney" : 2
+                "name": "경제적 성과를 기준으로 투자하자",
+                "effect": {
+                    "moneyByVariable": "labMoney",
+                    "variable": {
+                        "labMoney": 2
                     }
                 },
-                "description" : "골드를 얻습니다. 다음 R&D 투자시 2골드를 추가로 얻습니다. 이 효과는 중첩됩니다."
+                "description": "골드를 얻습니다. 다음 R&D 투자시 2골드를 추가로 얻습니다. 이 효과는 중첩됩니다."
             },
             {
-                "name" : "건설쪽으로 투자를 해보자",
-                "effect" : {
-                    "variable" : {
-                        "nextTurnDiscount" : 5
+                "name": "건설쪽으로 투자를 해보자",
+                "effect": {
+                    "variable": {
+                        "nextTurnDiscount": 5
                     }
                 },
-                "description" : "다음 턴에 구매하는 건물이 5골드 할인됩니다."
+                "description": "다음 번에 구매하는 건물이 5골드 할인됩니다."
             }
         ],
-        "code" : "R&D",
-        "id" : 9
+        "code": "R&D",
+        "id": 9
     },
-    "militaryResearch" : {
-        "name" : "연구소에서 군사 연구를 계획하였습니다!",
-        "options" : [
+    "militaryResearch": {
+        "name": "연구소에서 군사 연구를 계획하였습니다!",
+        "options": [
             {
-                "name" : "탱크를 연구해보자",
-                "effect" : {
-                    "variable" : {
-                        "tankBuff" : 1
+                "name": "탱크를 연구해보자",
+                "effect": {
+                    "variable": {
+                        "tankBuff": 1
                     },
-                    "deleteThisCard" : true
+                    "deleteThisCard": true
                 },
-                "description" : "탱크를 사용할 수 있게 됩니다. 이미 사용할 수 있다면 전투력 2를 추가로 부여합니다. 이 카드를 이벤트 덱에서 제거합니다."
+                "description": "탱크를 사용할 수 있게 됩니다. 이미 사용할 수 있다면 전투력 2를 추가로 부여합니다. 이 카드를 이벤트 덱에서 제거합니다."
             },
             {
-                "name" : "폭격기를 연구해보자",
-                "effect" : {
-                    "variable" : {
-                        "bomberBuff" : 1
+                "name": "폭격기를 연구해보자",
+                "effect": {
+                    "variable": {
+                        "bomberBuff": 1
                     },
-                    "deleteThisCard" : true
+                    "deleteThisCard": true
                 },
-                "description" : "폭격기를 사용할 수 있게 됩니다. 이미 사용할 수 있다면 전투력 4를 추가로 부여합니다. 이 카드를 이벤트 덱에서 제거합니다."
+                "description": "폭격기를 사용할 수 있게 됩니다. 이미 사용할 수 있다면 전투력 4를 추가로 부여합니다. 이 카드를 이벤트 덱에서 제거합니다."
             },
             {
-                "name" : "연구말고 돈이 급하다",
-                "effect" : {
-                    "money" : 10
+                "name": "연구말고 돈이 급하다",
+                "effect": {
+                    "money": 10
                 },
-                "description" : "10골드를 얻습니다."
+                "description": "10골드를 얻습니다."
             }
         ],
-        "code" : "militaryResearch",
-        "id" : 10
+        "code": "militaryResearch",
+        "id": 10
     }
 }

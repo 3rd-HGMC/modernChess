@@ -12,6 +12,8 @@ export const fromXY = (x, y, buildings = false) =>
 export const range = (n) => [...Array(n).keys()];
 
 export const randomSelection = (arr, n) => {
+    if (arr.length <= n) return arr;
+
     let res = [];
     for (let i = 0; i < n; i++) {
         let nw = arr[Math.floor(Math.random() * arr.length)];
@@ -22,3 +24,5 @@ export const randomSelection = (arr, n) => {
     }
     return res;
 };
+
+export const shuffle = (arr) => arr.toSorted(() => Math.random() - 0.5);

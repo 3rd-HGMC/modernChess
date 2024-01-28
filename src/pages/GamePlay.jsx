@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import { fromXY, range, randomSelection } from "../utils.js";
+import { fromXY, getXY, range, randomSelection, shuffle } from "../utils.js";
 
 import "../styles/GamePlay.css";
 import Black from "../assets/black.png";
@@ -47,9 +47,20 @@ const GamePlay = () => {
     const [botHP, setBotHP] = useState(defaultHP);
     const [money, setMoney] = useState(defaultMoney);
 
+    const [variable, setVariable] = useState({
+        tankBuff: 0,
+        bomberBuff: 0,
+        schoolMoney: 0,
+        labBuff: 0,
+        labMoney: 0,
+        nextTurnDiscount: 0,
+    });
+
     const [type, setType] = useState(0); // 0: event 1: units 2: buildings
 
-    const [eventDeck, setEventDeck] = useState(defaultEvents);
+    const [eventDeck, setEventDeck] = useState([shuffle(defaultEvents), []]);
+    const [eventResult, setEventResult] = useState("");
+
     const [buildingBoard, setBuildingBoard] = useState(
         Array.from({ length: buildingWidth * buildingHeight }, () => {
             return {
@@ -81,16 +92,21 @@ const GamePlay = () => {
         return res;
     };
 
+    const getPoint = (building) => {
+        let res = 0;
+        if (BuildingData[building.type].type === "military")
+            res += building.point.military;
+        if (BuildingData[building.type].type === "economy")
+            res += building.point.economy;
+        return (res = 0);
+    };
+
     const getBuildingPoint = (building) => {
         let res = [0, 0];
         for (let i = 0; i < buildingWidth * buildingHeight; i++) {
             if (buildingBoard[i].type === building) {
                 res[0]++;
-                res[1] += buildingBoard[i].point.default;
-                if (BuildingData[building].type === "military")
-                    res[1] += buildingBoard[i].point.military;
-                if (BuildingData[building].type === "economy")
-                    res[1] += buildingBoard[i].point.economy;
+                res[1] += getPoint(buildingBoard[i]);
             }
         }
         return res;
@@ -102,19 +118,32 @@ const GamePlay = () => {
 
         setSaleBuildings(randomSelection(Object.keys(BuildingData), 4));
 
+        if (!eventDeck[0].length) {
+            setEventDeck([shuffle(eventDeck[1]), []]);
+        }
+
+        if (variable.tankBuff && !currentUnits.includes("tank"))
+            setCurrentUnits([...currentUnits, "tank"]);
+        if (variable.bomberBuff && !currentUnits.includes("bomber"))
+            setCurrentUnits([...currentUnits, "bomber"]);
+
+        let addmoney = 0;
+
         Object.keys(BuildingData).forEach((x) => {
             if (BuildingData[x].type === "economy") {
                 let k = getBuildingPoint(x);
-                setMoney(
-                    money +
-                        k[0] * BuildingData[x].update.money +
-                        k[1] * BuildingData[x].update.buff.money
-                );
+                addmoney +=
+                    k[0] * BuildingData[x].updateByTurn.money +
+                    k[1] * BuildingData[x].updateByTurn.buff.money;
             }
         });
 
-        let i, bd, newbd, unitInfo, living, newBoard;
-        newBoard = [...board];
+        let i,
+            bd,
+            newbd,
+            unitInfo,
+            living,
+            newBoard = [...board];
 
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
@@ -124,6 +153,8 @@ const GamePlay = () => {
                 if (bd.type === "") continue;
                 if (bd.team === "blue") continue;
                 unitInfo = UnitData[bd.type];
+
+                let move = true;
 
                 if (unitInfo.range > 0) {
                     for (i = 1; i <= unitInfo.range; i++) {
@@ -142,24 +173,24 @@ const GamePlay = () => {
                             Object.keys(BuildingData).forEach((x) => {
                                 if (BuildingData[x].type === "military") {
                                     let k = getBuildingPoint(x);
-                                    setMoney(
-                                        money +
-                                            k[0] *
-                                                BuildingData[x].update
-                                                    .killMoney +
-                                            k[1] *
-                                                BuildingData[x].update.buff
-                                                    .killMoney
-                                    );
+                                    addmoney +=
+                                        k[0] *
+                                            BuildingData[x].update.killMoney +
+                                        k[1] *
+                                            BuildingData[x].update.buff
+                                                .killMoney;
                                 }
                             });
                         } else {
                             newBoard[fromXY(x, y - i)].power -=
                                 unitInfo.rangedAttack;
                         }
+                        move = false;
                         break;
                     }
-                } else {
+                }
+
+                if (move) {
                     newBoard[fromXY(x, y)] = {
                         team: "",
                         type: "",
@@ -189,15 +220,13 @@ const GamePlay = () => {
                                 Object.keys(BuildingData).forEach((x) => {
                                     if (BuildingData[x].type === "military") {
                                         let k = getBuildingPoint(x);
-                                        setMoney(
-                                            money +
-                                                k[0] *
-                                                    BuildingData[x].update
-                                                        .killMoney +
-                                                k[1] *
-                                                    BuildingData[x].update.buff
-                                                        .killMoney
-                                        );
+                                        addmoney +=
+                                            k[0] *
+                                                BuildingData[x].update
+                                                    .killMoney +
+                                            k[1] *
+                                                BuildingData[x].update.buff
+                                                    .killMoney;
                                     }
                                 });
                             }
@@ -212,7 +241,9 @@ const GamePlay = () => {
                 }
             }
         }
+
         setBoard(newBoard);
+        setMoney(money + addmoney);
 
         if (gameResult === 1) alert("승리했습니다");
     };
@@ -224,6 +255,112 @@ const GamePlay = () => {
     };
 
     const doEvent = (option) => {
+        setEventResult(option.description);
+        option = option.effect;
+        if (option.money) setMoney(money + option.money);
+        if (option.moneyByVariable)
+            setMoney(money + variable[option.moneyByVariable]);
+        if (option.refreshStore)
+            setSaleBuildings(randomSelection(Object.keys(BuildingData), 4));
+        if (option.randomBuilding) {
+            let boardCopy = [...buildingBoard];
+            let buildingList = [];
+            for (let i = 0; i < buildingWidth * buildingHeight; i++) {
+                if (buildingBoard[i].type !== "") buildingList.push(i);
+            }
+
+            if (option.randomBuilding.point && buildingList.length) {
+                boardCopy[randomSelection(buildingList, 1)].point.default +=
+                    option.randomBuilding.point;
+            } else if (option.randomBuilding.delete) {
+                randomSelection(
+                    buildingList,
+                    option.randomBuilding.delete
+                ).forEach((x) => {
+                    boardCopy[x].type = "";
+                });
+            }
+
+            setBuildingBoard(boardCopy);
+        }
+        if (option.newBuilding) {
+            let boardCopy = [...buildingBoard];
+            let buildingList = [];
+            for (let i = 0; i < buildingWidth * buildingHeight; i++) {
+                if (buildingBoard[i].type === "") buildingList.push(i);
+            }
+
+            let i = 0;
+            randomSelection(buildingList, option.newBuilding.length).forEach(
+                (x) => {
+                    boardCopy[x].type = option.newBuilding[i++];
+                }
+            );
+
+            setBuildingBoard(boardCopy);
+        }
+        if (option.deleteSoldier) {
+            let newBoard = [...board];
+            let unitList = [];
+
+            for (let i = 0; i < width * height; i++) {
+                if (board[i].type !== "") unitList.push(i);
+            }
+
+            randomSelection(unitList, option.deleteSoldier).forEach((x) => {
+                newBoard[x] = {
+                    team: "",
+                    type: "",
+                    power: 0,
+                };
+            });
+
+            setBoard(newBoard);
+        }
+        if (option.variable) {
+            let copyVariable = { ...variable };
+            if (option.variable.labBuff) {
+                for (let i = 0; i < buildingWidth * buildingHeight; i++) {
+                    if (buildingBoard[i].type === "lab") {
+                        let boardCopy = [...buildingBoard],
+                            x = getXY(i, true);
+                        BuildingData.lab.buffRange.forEach((k) => {
+                            let i = k[0] + x[0],
+                                j = k[1] + x[1];
+
+                            if (
+                                i < 0 ||
+                                j < 0 ||
+                                i >= buildingWidth ||
+                                j >= buildingHeight
+                            )
+                                return;
+
+                            boardCopy[fromXY(i, j, true)].point.default +=
+                                option.variable.labBuff;
+                        });
+                    }
+                }
+            }
+            Object.keys(option.variable).forEach((x) => {
+                if (x === "nextTurnDiscount")
+                    copyVariable[x] = option.variable[x];
+                else copyVariable[x] += option.variable[x];
+            });
+            setVariable(copyVariable);
+        }
+
+        let unusedEventDeck = option.newCard
+            ? [...eventDeck[0], ...option.newCard]
+            : [...eventDeck[0]];
+        let first = unusedEventDeck.shift();
+
+        if (!option.deleteThisCard)
+            setEventDeck([unusedEventDeck, eventDeck[1].concat(first)]);
+        else {
+            setEventDeck([unusedEventDeck, eventDeck[1]]);
+        }
+
         setTurnStarted(false);
     };
 
@@ -232,6 +369,7 @@ const GamePlay = () => {
     }, []);
 
     useEffect(() => {
+        console.log(eventDeck);
         // Test
     });
 
@@ -288,22 +426,32 @@ const GamePlay = () => {
                 <div className="gamePlay">
                     {type === 0 ? (
                         <div className="events">
-                            <div className="eventDetail detail">
-                                {"<"}이벤트 발생문구{">"}
-                            </div>
-                            {range(3).map((event) => (
-                                <button
-                                    key={`eventbtn${event}`}
-                                    type="button"
-                                    className="eventButton btn bigBtn"
-                                    onClick={() => doEvent(event)}
-                                    style={{
-                                        backgroundImage: `url(${EventOption})`,
-                                    }}
-                                >
-                                    Event #01
-                                </button>
-                            ))}
+                            {turnStarted ? (
+                                <div>
+                                    <div className="eventDetail detail">
+                                        {`<${EventData[eventDeck[0][0]].name}>`}
+                                    </div>
+                                    {EventData[eventDeck[0][0]].options.map(
+                                        (event) => (
+                                            <button
+                                                key={`eventbtn${event.name}`}
+                                                type="button"
+                                                className="eventButton btn bigBtn"
+                                                onClick={() => doEvent(event)}
+                                                style={{
+                                                    backgroundImage: `url(${EventOption})`,
+                                                }}
+                                            >
+                                                {event.name}
+                                            </button>
+                                        )
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="eventDetail detail">
+                                    {eventResult}
+                                </div>
+                            )}
                         </div>
                     ) : type === 1 ? (
                         <div className="units">
@@ -424,9 +572,21 @@ const GamePlay = () => {
                                                         ] = {
                                                             team: "red",
                                                             type: selectedUnit,
-                                                            power: UnitData[
-                                                                selectedUnit
-                                                            ].power,
+                                                            power:
+                                                                UnitData[
+                                                                    selectedUnit
+                                                                ].power +
+                                                                (selectedUnit ===
+                                                                "tank"
+                                                                    ? (variable.tankBuff -
+                                                                          1) *
+                                                                      2
+                                                                    : selectedUnit ===
+                                                                      "bomber"
+                                                                    ? (variable.bomberBuff -
+                                                                          1) *
+                                                                      4
+                                                                    : 0),
                                                         };
                                                         setBoard(boardCopy);
                                                     }
@@ -593,9 +753,12 @@ const GamePlay = () => {
                                                                                         j,
                                                                                         true
                                                                                     )
-                                                                                ]
-                                                                                    .point
-                                                                                    .default--;
+                                                                                ].point.default -=
+                                                                                    1 +
+                                                                                    (info.type ===
+                                                                                    "lab"
+                                                                                        ? variable.labBuff
+                                                                                        : 0);
                                                                             else
                                                                                 boardCopy[
                                                                                     fromXY(
@@ -631,17 +794,30 @@ const GamePlay = () => {
                                                                         )
                                                                     ) {
                                                                         setEventDeck(
-                                                                            eventDeck.filter(
-                                                                                (
-                                                                                    e
-                                                                                ) =>
-                                                                                    !BuildingData[
-                                                                                        info
-                                                                                            .type
-                                                                                    ].start.newCard.includes(
+                                                                            [
+                                                                                eventDeck[0].filter(
+                                                                                    (
                                                                                         e
-                                                                                    )
-                                                                            )
+                                                                                    ) =>
+                                                                                        !BuildingData[
+                                                                                            info
+                                                                                                .type
+                                                                                        ].start.newCard.includes(
+                                                                                            e
+                                                                                        )
+                                                                                ),
+                                                                                eventDeck[1].filter(
+                                                                                    (
+                                                                                        e
+                                                                                    ) =>
+                                                                                        !BuildingData[
+                                                                                            info
+                                                                                                .type
+                                                                                        ].start.newCard.includes(
+                                                                                            e
+                                                                                        )
+                                                                                ),
+                                                                            ]
                                                                         );
                                                                     }
                                                                 }
@@ -711,7 +887,8 @@ const GamePlay = () => {
                                                         money <
                                                         BuildingData[
                                                             selectedBuilding
-                                                        ].cost
+                                                        ].cost -
+                                                            variable.nextTurnDiscount
                                                     )
                                                         alert(
                                                             "돈이 부족합니다"
@@ -770,9 +947,28 @@ const GamePlay = () => {
                                                             money -
                                                                 BuildingData[
                                                                     selectedBuilding
-                                                                ].cost
+                                                                ].cost +
+                                                                variable.nextTurnDiscount
                                                         );
-
+                                                        setVariable({
+                                                            ...variable,
+                                                            nextTurnDiscount: 0,
+                                                        });
+                                                        if (
+                                                            !checkBuilding(
+                                                                selectedBuilding
+                                                            )
+                                                        ) {
+                                                            setEventDeck([
+                                                                eventDeck[0],
+                                                                eventDeck[1].concat(
+                                                                    BuildingData[
+                                                                        selectedBuilding
+                                                                    ].start
+                                                                        .newCard
+                                                                ),
+                                                            ]);
+                                                        }
                                                         let boardCopy = [
                                                             ...buildingBoard,
                                                         ];
@@ -784,22 +980,6 @@ const GamePlay = () => {
                                                             )
                                                         ].type =
                                                             selectedBuilding;
-
-                                                        if (
-                                                            !checkBuilding(
-                                                                selectedBuilding
-                                                            )
-                                                        ) {
-                                                            setEventDeck(
-                                                                eventDeck.concat(
-                                                                    BuildingData[
-                                                                        selectedBuilding
-                                                                    ].start
-                                                                        .newCard
-                                                                )
-                                                            );
-                                                        }
-
                                                         BuildingData[
                                                             selectedBuilding
                                                         ].buffRange.forEach(
@@ -836,8 +1016,12 @@ const GamePlay = () => {
                                                                             j,
                                                                             true
                                                                         )
-                                                                    ].point
-                                                                        .default++;
+                                                                    ].point.default +=
+                                                                        1 +
+                                                                        (selectedBuilding ===
+                                                                        "lab"
+                                                                            ? variable.labBuff
+                                                                            : 0);
                                                                 else
                                                                     boardCopy[
                                                                         fromXY(
