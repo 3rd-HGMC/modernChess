@@ -100,7 +100,7 @@
         "code": "bank",
         "type": "economy"
     },
-    "factiory": {
+    "factory": {
         "name": "공장",
         "description": "턴마다 2골드 (+ 2)를 얻습니다. / 1칸 이내의 경제 건물에 1포인트를 제공합니다.",
         "start": {},

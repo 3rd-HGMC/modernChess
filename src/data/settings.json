@@ -4,5 +4,6 @@
         "height": 10
     },
     "defaultHP": 15,
-    "defaultMoney": 10
+    "defaultMoney": 10,
+    "defaultUnits": ["infantry", "scout", "sniper"]
 }

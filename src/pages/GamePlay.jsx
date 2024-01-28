@@ -35,7 +35,8 @@ import Settings from "../data/settings.json";
 const width = Settings.board.width,
     height = Settings.board.height,
     defaultHP = Settings.defaultHP,
-    defaultMoney = Settings.defaultMoney;
+    defaultMoney = Settings.defaultMoney,
+    defaultUnits = Settings.defaultUnits;
 
 const GamePlay = () => {
     const [board, setBoard] = useState(
@@ -56,43 +57,103 @@ const GamePlay = () => {
 
     const [turnStarted, setTurnStarted] = useState(true);
 
-    const [selectedUnit, setSelectedUnit] = useState("none"); // 0: none 1: bomber 2: infantry 3: scout 4: sniper 5: tank
+    const [selectedUnit, setSelectedUnit] = useState("none");
     const [selectedBuilding, setSelectedBuilding] = useState(0); // 0: none 나머지는 순서대로
 
-    const [currentUnits, setCurrentUnits] = useState([
-        "infantry",
-        "scout",
-        "tank",
-    ]);
+    const [currentUnits, setCurrentUnits] = useState(defaultUnits);
+
+    const [gameResult, setGameResult] = useState(0); // 1: win 0: 진행중 -1: lose
 
     const startTurn = () => {
         setTurnStarted(true);
         setTurn(turn + 1);
 
-        let newBoard = [...board];
-        let bd, unitInfo;
+        let i, bd, newbd, unitInfo, living, newBoard;
+        newBoard = [...board];
 
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
-                bd = board[fromXY(x, y)];
+                bd = newBoard[fromXY(x, y)];
+                living = true;
+
                 if (bd.type === "") continue;
                 if (bd.team === "blue") continue;
                 unitInfo = UnitData[bd.type];
-                for (let i = 1; i <= unitInfo.speed; i++) {
-                    if (y + i == height - 1) {
-                        setBotHP(botHP - bd.power);
+
+                if (unitInfo.range > 0) {
+                    for (i = 1; i <= unitInfo.range; i++) {
+                        if (y - i === 0) break;
+
+                        newbd = newBoard[fromXY(x, y - i)];
+                        if (newbd.type === "") continue;
+
+                        if (newbd.power <= unitInfo.rangedAttack) {
+                            newBoard[fromXY(x, y - i)] = {
+                                team: "",
+                                type: "",
+                                power: 0,
+                            };
+                        } else {
+                            newBoard[fromXY(x, y - i)].power -=
+                                unitInfo.rangedAttack;
+                        }
+                        break;
                     }
+                } else {
+                    newBoard[fromXY(x, y)] = {
+                        team: "",
+                        type: "",
+                        power: 0,
+                    };
+
+                    for (i = 1; i <= unitInfo.speed; i++) {
+                        if (y - i === 0) {
+                            setBotHP(botHP - bd.power);
+                            if (botHP <= bd.power) setGameResult(1);
+                            living = false;
+                            break;
+                        }
+
+                        newbd = newBoard[fromXY(x, y - i)];
+                        if (newbd.type === "") continue;
+                        else if (newbd.team === "red") {
+                            i--;
+                            break;
+                        } else {
+                            if (newbd.power > bd.power) {
+                                living = false;
+                                newBoard[fromXY(x, y - i)].power -= bd.power;
+                            } else if (newbd.power === bd.power) living = false;
+                            else bd.power -= newbd.power;
+                            break;
+                        }
+                    }
+                }
+
+                if (living) {
+                    i = Math.min(unitInfo.speed, i);
+                    newBoard[fromXY(x, y - i)] = bd;
                 }
             }
         }
+        setBoard(newBoard);
+
+        if (gameResult === 1) alert("승리했습니다");
     };
 
     const enemyTurn = () => {
         if (turnStarted) return;
+        if (gameResult === -1) alert("패배했습니다");
         startTurn();
     };
 
-    useEffect(() => startTurn(), []);
+    const doEvent = (option) => {
+        setTurnStarted(false);
+    };
+
+    useEffect(() => {
+        startTurn();
+    }, []);
 
     return (
         <div className="grid">
@@ -150,12 +211,12 @@ const GamePlay = () => {
                             <div className="eventDetail detail">
                                 {"<"}이벤트 발생문구{">"}
                             </div>
-                            {events.map((event) => (
+                            {range(3).map((event) => (
                                 <button
                                     key={`eventbtn${event}`}
                                     type="button"
                                     className="eventButton btn bigBtn"
-                                    onClick={() => 0}
+                                    onClick={() => doEvent(event)}
                                     style={{
                                         backgroundImage: `url(${EventOption})`,
                                     }}
