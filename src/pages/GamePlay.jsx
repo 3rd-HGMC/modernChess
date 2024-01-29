@@ -148,17 +148,6 @@ const GamePlay = () => {
             newBoard = [...board],
             gameResult = 0;
 
-        const newUnits = enemyTiming[turn % enemyTiming.length];
-        for (let x of randomSelection(range(width), newUnits.length)) {
-            newBoard[fromXY(x, 0)] = {
-                team: "blue",
-                type: newUnits[i],
-                power: UnitData[newUnits[i]].power,
-            };
-            console.log(newBoard[fromXY(x, 0)]);
-            i++;
-        }
-
         const move = (team, dir) => {
             for (
                 let y = team === "red" ? 0 : height - 1;
@@ -177,7 +166,7 @@ const GamePlay = () => {
 
                     if (unitInfo.range > 0) {
                         for (i = 1; i <= unitInfo.range; i++) {
-                            if (y + dir * i === 0) break;
+                            if (y + dir * i < 0 || y + dir * i >= height) break;
 
                             newbd = newBoard[fromXY(x, y + dir * i)];
                             if (newbd.type === "") continue;
@@ -222,21 +211,7 @@ const GamePlay = () => {
                         };
 
                         for (i = 1; i <= unitInfo.speed; i++) {
-                            if (team === "red") {
-                                if (y + dir * i === 0) {
-                                    if (botHP <= bd.power) gameResult = 1;
-                                    setBotHP(botHP - bd.power);
-                                    living = false;
-                                    break;
-                                }
-                            } else {
-                                if (y + dir * i === height - 1) {
-                                    if (hp <= bd.power) gameResult = -1;
-                                    setHP(hp - bd.power);
-                                    living = false;
-                                    break;
-                                }
-                            }
+                            if (y + dir * i < 0 || y + dir * i >= height) break;
 
                             newbd = newBoard[fromXY(x, y + dir * i)];
                             if (newbd.type === "") continue;
@@ -279,6 +254,21 @@ const GamePlay = () => {
 
                     if (living) {
                         i = Math.min(unitInfo.speed, i);
+                        if (team === "red") {
+                            if (y + dir * i === 0) {
+                                if (botHP <= bd.power) gameResult = 1;
+                                setBotHP(botHP - bd.power);
+                                living = false;
+                                break;
+                            }
+                        } else {
+                            if (y + dir * i === height - 1) {
+                                if (hp <= bd.power) gameResult = -1;
+                                setHP(hp - bd.power);
+                                living = false;
+                                break;
+                            }
+                        }
                         newBoard[fromXY(x, y + dir * i)] = bd;
                     }
                 }
@@ -287,14 +277,16 @@ const GamePlay = () => {
 
         move("red", -1);
         move("blue", 1);
-        console.log(
-            newBoard[fromXY(0, 0)],
-            newBoard[fromXY(1, 0)],
-            newBoard[fromXY(2, 0)],
-            newBoard[fromXY(3, 0)],
-            newBoard[fromXY(4, 0)],
-            newBoard
-        );
+
+        const newUnits = enemyTiming[(turn + 1) % enemyTiming.length];
+        for (let x of randomSelection(range(width), newUnits.length)) {
+            newBoard[fromXY(x, 0)] = {
+                team: "blue",
+                type: newUnits[i],
+                power: UnitData[newUnits[i]].power,
+            };
+            i++;
+        }
 
         setBoard(newBoard);
         setMoney(money + addmoney);
