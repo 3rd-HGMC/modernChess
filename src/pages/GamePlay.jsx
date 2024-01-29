@@ -46,7 +46,7 @@ const GamePlay = () => {
         })
     );
 
-    const [turn, setTurn] = useState(1);
+    const [turn, setTurn] = useState(0);
     const [hp, setHP] = useState(defaultHP);
     const [botHP, setBotHP] = useState(defaultHP);
     const [money, setMoney] = useState(defaultMoney);
@@ -79,7 +79,7 @@ const GamePlay = () => {
     );
     const [saleBuildings, setSaleBuildings] = useState([]);
 
-    const [turnStarted, setTurnStarted] = useState(true);
+    const [turnStarted, setTurnStarted] = useState(false);
 
     const [selectedUnit, setSelectedUnit] = useState("none");
     const [selectedBuilding, setSelectedBuilding] = useState("none");
@@ -580,13 +580,17 @@ const GamePlay = () => {
                                                             "남은 칸이 없습니다"
                                                         );
                                                     else {
-                                                        let selection;
+                                                        let selection, inp;
                                                         do {
+                                                            inp = prompt(
+                                                                `유닛을 배치할 나의 진영 칸 (1 ~ ${width})을 입력해주세요`
+                                                            );
+                                                            if (inp === null)
+                                                                break;
+
                                                             selection =
                                                                 parseInt(
-                                                                    prompt(
-                                                                        `유닛을 배치할 나의 진영 칸 (1 ~ ${width})을 입력해주세요`
-                                                                    ),
+                                                                    inp,
                                                                     10
                                                                 );
                                                         } while (
@@ -601,6 +605,9 @@ const GamePlay = () => {
                                                                 )
                                                             ].type !== ""
                                                         );
+
+                                                        if (inp === null)
+                                                            return;
 
                                                         setMoney(
                                                             money -
@@ -947,14 +954,19 @@ const GamePlay = () => {
                                                         );
                                                     else {
                                                         let Xselection,
-                                                            Yselection;
+                                                            Yselection,
+                                                            inp;
 
                                                         do {
+                                                            inp = prompt(
+                                                                `건물을 건설할 도시 열 (1 ~ ${buildingHeight})을 골라주세요`
+                                                            );
+                                                            if (inp === null)
+                                                                break;
+
                                                             Yselection =
                                                                 parseInt(
-                                                                    prompt(
-                                                                        `건물을 건설할 도시 열 (1 ~ ${buildingHeight})을 골라주세요`
-                                                                    ),
+                                                                    inp,
                                                                     10
                                                                 );
                                                         } while (
@@ -967,12 +979,19 @@ const GamePlay = () => {
                                                             ]
                                                         );
 
+                                                        if (inp === null)
+                                                            return;
+
                                                         do {
+                                                            inp = prompt(
+                                                                `건물을 건설할 도시 행 (1 ~ ${buildingWidth})을 골라주세요`
+                                                            );
+                                                            if (inp === null)
+                                                                break;
+
                                                             Xselection =
                                                                 parseInt(
-                                                                    prompt(
-                                                                        `건물을 건설할 도시 행 (1 ~ ${buildingWidth})을 골라주세요`
-                                                                    ),
+                                                                    inp,
                                                                     10
                                                                 );
                                                         } while (
@@ -990,6 +1009,9 @@ const GamePlay = () => {
                                                                 )
                                                             ].type !== ""
                                                         );
+
+                                                        if (inp === null)
+                                                            return;
 
                                                         setMoney(
                                                             money -
