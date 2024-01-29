@@ -170,6 +170,7 @@ const GamePlay = () => {
 
                             newbd = newBoard[fromXY(x, y + dir * i)];
                             if (newbd.type === "") continue;
+                            if (newbd.team === team) continue;
 
                             if (newbd.power <= unitInfo.rangedAttack) {
                                 newBoard[fromXY(x, y + dir * i)] = {
@@ -250,26 +251,26 @@ const GamePlay = () => {
                                 break;
                             }
                         }
-                    }
 
-                    if (living) {
-                        i = Math.min(unitInfo.speed, i);
-                        if (team === "red") {
-                            if (y + dir * i === 0) {
-                                if (botHP <= bd.power) gameResult = 1;
-                                setBotHP(botHP - bd.power);
-                                living = false;
-                                break;
+                        if (living) {
+                            i = Math.min(unitInfo.speed, i);
+                            if (team === "red") {
+                                if (y + dir * i === 0) {
+                                    if (botHP <= bd.power) gameResult = 1;
+                                    setBotHP(botHP - bd.power);
+                                    living = false;
+                                    break;
+                                }
+                            } else {
+                                if (y + dir * i === height - 1) {
+                                    if (hp <= bd.power) gameResult = -1;
+                                    setHP(hp - bd.power);
+                                    living = false;
+                                    break;
+                                }
                             }
-                        } else {
-                            if (y + dir * i === height - 1) {
-                                if (hp <= bd.power) gameResult = -1;
-                                setHP(hp - bd.power);
-                                living = false;
-                                break;
-                            }
+                            newBoard[fromXY(x, y + dir * i)] = bd;
                         }
-                        newBoard[fromXY(x, y + dir * i)] = bd;
                     }
                 }
             }
@@ -278,6 +279,7 @@ const GamePlay = () => {
         move("red", -1);
         move("blue", 1);
 
+        i = 0;
         const newUnits = enemyTiming[(turn + 1) % enemyTiming.length];
         for (let x of randomSelection(range(width), newUnits.length)) {
             newBoard[fromXY(x, 0)] = {
